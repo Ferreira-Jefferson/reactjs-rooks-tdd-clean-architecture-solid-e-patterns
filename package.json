@@ -10,7 +10,8 @@
     "test:verbose": "jest --passWithNoTests",
     "test:staged": "yarn test -- --findRelatedTests",
     "test:ci": "yarn test -- --coverage",
-    "test:coveralls": "yarn test:ci && coveralls < coverage/lcov.info"
+    "test:coveralls": "yarn test:ci && coveralls < coverage/lcov.info",
+    "check": "npx yarn-check -u -s"
   },
   "devDependencies": {
     "@types/jest": "^26.0.13",
