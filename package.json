@@ -1,0 +1,11 @@
+{
+  "name": "reactjs-rooks-tdd-clean-architecture-solid-e-patterns",
+  "version": "0.0.1",
+  "description": "ReactJS, Hooks, TDD, Clean Architecture, SOLID e Patterns",
+  "author": "Jefferson Ferreira <jefferson.ctc.ferreira@outlook.com>",
+  "license": "GPL-3.0-or-later",
+  "main": "index.js",
+  "devDependencies": {
+    "git-commit-msg-linter": "^2.6.0"
+  }
+}
