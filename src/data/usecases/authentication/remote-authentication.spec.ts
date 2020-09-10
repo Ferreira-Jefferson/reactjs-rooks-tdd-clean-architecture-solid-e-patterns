@@ -2,7 +2,7 @@ import { UnexpectedError } from '@/domain/errors/unexpected-error'
 import { InvalidCredentialsError } from '@/domain/errors/invalid-credentials-error'
 import { HttpStatusCode } from '@/data/protocols/http/http-response'
 import { RemoteAuthentication } from './remote-authentication'
-import { fakeAuthentication } from '@/domain/test/fake-authentication'
+import { fakeAuthentication, fakeAccountModel } from '@/domain/test/fake-account'
 import { HttpPostClientStub } from '@/data/test/stub-http-client'
 import { AuthenticationParams } from '@/domain/usecases/authentication'
 import { AccountModel } from '@/domain/models/account-model'
@@ -71,5 +71,16 @@ describe('RemoteAuthentication', () => {
     }
     const promise = sut.auth(fakeAuthentication())
     await expect(promise).rejects.toThrowError(new UnexpectedError())
+  })
+
+  it('should returns an AccountModel if HttpPostClient returns 200', async () => {
+    const { sut, httpPostClientStub } = makeSut()
+    const httpResult = fakeAccountModel()
+    httpPostClientStub.response = {
+      statusCode: HttpStatusCode.ok,
+      body: httpResult
+    }
+    const account = await sut.auth(fakeAuthentication())
+    expect(account).toEqual(httpResult)
   })
 })
