@@ -39,7 +39,7 @@ describe('RemoteAuthentication', () => {
   it('should throw InvalidCredentialsError if HttpPostClient returns 401', async () => {
     const { sut, httpPostClientStub } = makeSut()
     httpPostClientStub.response = {
-      statusCode: HttpStatusCode.unathorized
+      statusCode: HttpStatusCode.unauthorized
     }
     const promise = sut.auth(fakeAuthentication())
     await expect(promise).rejects.toThrowError(new InvalidCredentialsError())
