@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2019",
+    "target": "es6",
     "lib": [
       "dom",
       "dom.iterable",
@@ -8,17 +8,13 @@
     ],
     "esModuleInterop": true,
     "module": "ESNext",
+    "moduleResolution": "node",
     "jsx": "react",
     "rootDir": "src",
     "baseUrl": "src",
     "allowJs": true,
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
     "strict": true,
-    "strictNullChecks": false,
-    "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "noEmit": true,
     "paths": {
       "@/*": ["*"]
     }
