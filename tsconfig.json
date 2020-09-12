@@ -13,8 +13,9 @@
     "rootDir": "src",
     "baseUrl": "src",
     "allowJs": true,
-    "strict": true,
     "resolveJsonModule": true,
+    "strict": true,
+    "strictNullChecks": false,
     "paths": {
       "@/*": ["*"]
     }
