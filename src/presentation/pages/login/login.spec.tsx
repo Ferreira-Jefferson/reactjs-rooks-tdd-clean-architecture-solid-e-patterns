@@ -94,8 +94,7 @@ describe('Login Component', () => {
       })
 
       it('should show valid email state if Validation succeeds', () => {
-        const { sut, validationStub } = makeSut()
-        jest.spyOn(validationStub, 'validate').mockReturnValueOnce(null)
+        const { sut } = makeSut()
         const emailInput = sut.getByTestId('email')
         fireEvent.blur(emailInput)
         const emailStatus = sut.getByTestId('email-status')
@@ -104,8 +103,7 @@ describe('Login Component', () => {
       })
 
       it('should show valid password state if Validation succeeds', () => {
-        const { sut, validationStub } = makeSut()
-        jest.spyOn(validationStub, 'validate').mockReturnValueOnce(null)
+        const { sut } = makeSut()
         const passwordInput = sut.getByTestId('password')
         fireEvent.blur(passwordInput)
         const passwordStatus = sut.getByTestId('password-status')
@@ -116,8 +114,7 @@ describe('Login Component', () => {
 
     describe('Success', () => {
       it('should enable button if form is valid', () => {
-        const { sut, validationStub } = makeSut()
-        jest.spyOn(validationStub, 'validate').mockReturnValueOnce(null)
+        const { sut } = makeSut()
         const emailInput = sut.getByTestId('email')
         const email = faker.internet.email()
         fireEvent.input(emailInput, { target: { value: email } })
