@@ -101,5 +101,15 @@ describe('Login Component', () => {
       expect(emailStatus.title).toBe('Campo preencido corretamente')
       expect(emailStatus.textContent).toBe('✓')
     })
+
+    it('should show valid password state if Validation succeeds', () => {
+      const { sut, validationStub } = makeSut()
+      jest.spyOn(validationStub, 'validate').mockReturnValueOnce(null)
+      const passwordInput = sut.getByTestId('password')
+      fireEvent.blur(passwordInput)
+      const passwordStatus = sut.getByTestId('password-status')
+      expect(passwordStatus.title).toBe('Campo preencido corretamente')
+      expect(passwordStatus.textContent).toBe('✓')
+    })
   })
 })
