@@ -1,19 +1,22 @@
 import React from 'react'
-import { render, RenderResult, fireEvent, cleanup } from '@testing-library/react'
-import Login from './login'
-import { ValidationStub } from '@/presentation/test/stub-validation'
 import faker from 'faker'
+import { render, RenderResult, fireEvent, cleanup } from '@testing-library/react'
+import { ValidationStub } from '@/presentation/test/stub-validation'
+import { Authentication, AuthenticationParams } from '@/domain/usecases'
+import { AccountModel } from '@/domain/models'
+import { fakeAccountModel } from '@/domain/test'
+import Login from './login'
 
 type LoginModel = {
-  emailInput: HTMLElement
-  passwordInput: HTMLElement
+  emailInput: HTMLInputElement
+  passwordInput: HTMLInputElement
 }
 
 const fakeLoginModel = (sut: RenderResult): LoginModel => {
-  const emailInput = sut.getByTestId('email')
+  const emailInput = sut.getByTestId('email') as HTMLInputElement
   fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
   fireEvent.blur(emailInput)
-  const passwordInput = sut.getByTestId('password')
+  const passwordInput = sut.getByTestId('password') as HTMLInputElement
   fireEvent.input(passwordInput, { target: { value: faker.internet.password() } })
   fireEvent.blur(passwordInput)
   return {
@@ -22,17 +25,26 @@ const fakeLoginModel = (sut: RenderResult): LoginModel => {
   }
 }
 
+class AuthenticationStub implements Authentication {
+  async auth (params: AuthenticationParams): Promise<AccountModel> {
+    return await Promise.resolve(fakeAccountModel())
+  }
+}
+
 type SutTypes = {
   sut: RenderResult
   validationStub: ValidationStub
+  authenticationStub: AuthenticationStub
 }
 
 const makeSut = (): SutTypes => {
   const validationStub = new ValidationStub()
-  const sut = render(<Login validation={validationStub}/>)
+  const authenticationStub = new AuthenticationStub()
+  const sut = render(<Login validation={validationStub} authentication={authenticationStub}/>)
   return {
     sut,
-    validationStub
+    validationStub,
+    authenticationStub
   }
 }
 
@@ -143,6 +155,18 @@ describe('Login Component', () => {
         fireEvent.click(submitButton)
         const spinner = sut.getByTestId('spinner')
         expect(spinner).toBeTruthy()
+      })
+
+      it('should call Authentication with correct values', () => {
+        const { sut, authenticationStub } = makeSut()
+        const authSpy = jest.spyOn(authenticationStub, 'auth')
+        const { emailInput, passwordInput } = fakeLoginModel(sut)
+        const submitButton = sut.getByTestId('submit')
+        fireEvent.click(submitButton)
+        expect(authSpy).toBeCalledWith({
+          email: emailInput?.value,
+          password: passwordInput?.value
+        })
       })
     })
   })
