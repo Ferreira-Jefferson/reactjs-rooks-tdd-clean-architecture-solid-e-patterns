@@ -59,13 +59,15 @@ describe('Login Component', () => {
       expect(validateSpy).toBeCalledWith('email', email)
     })
 
-    it('should call Validation with correct password', () => {
+    it('should show email error if Validation fails', () => {
       const { sut, validationStub } = makeSut()
-      const validateSpy = jest.spyOn(validationStub, 'validate')
-      const passwordInput = sut.getByTestId('password')
-      const password = faker.internet.password()
-      fireEvent.input(passwordInput, { target: { value: password } })
-      expect(validateSpy).toBeCalledWith('password', password)
+      const errorMessage = faker.random.words()
+      jest.spyOn(validationStub, 'validate').mockReturnValueOnce(errorMessage)
+      const emailInput = sut.getByTestId('email')
+      fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
+      const emailStatus = sut.getByTestId('email-status')
+      expect(emailStatus.title).toBe(errorMessage)
+      expect(emailStatus.textContent).toBe('*')
     })
   })
 })
