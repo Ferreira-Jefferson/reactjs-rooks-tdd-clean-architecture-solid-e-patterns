@@ -2,45 +2,19 @@ import React from 'react'
 import faker from 'faker'
 import { render, RenderResult, fireEvent, cleanup } from '@testing-library/react'
 import { Validation } from '@/presentation/protocols/validation'
-import { stubValidation } from '@/presentation/test/stub-validation'
-import { Authentication, AuthenticationParams } from '@/domain/usecases'
-import { AccountModel } from '@/domain/models'
-import { fakeAccountModel } from '@/domain/test'
+import { stubValidation, stubAuthentication, fakeLoginModel } from '@/presentation/test'
+import { Authentication } from '@/domain/usecases'
 import Login from './login'
-
-type LoginModel = {
-  emailInput: HTMLInputElement
-  passwordInput: HTMLInputElement
-}
-
-const fakeLoginModel = (sut: RenderResult): LoginModel => {
-  const emailInput = sut.getByTestId('email') as HTMLInputElement
-  fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
-  fireEvent.blur(emailInput)
-  const passwordInput = sut.getByTestId('password') as HTMLInputElement
-  fireEvent.input(passwordInput, { target: { value: faker.internet.password() } })
-  fireEvent.blur(passwordInput)
-  return {
-    emailInput,
-    passwordInput
-  }
-}
-
-class AuthenticationStub implements Authentication {
-  async auth (params: AuthenticationParams): Promise<AccountModel> {
-    return await Promise.resolve(fakeAccountModel())
-  }
-}
 
 type SutTypes = {
   sut: RenderResult
   validationStub: Validation
-  authenticationStub: AuthenticationStub
+  authenticationStub: Authentication
 }
 
 const makeSut = (): SutTypes => {
   const validationStub = stubValidation()
-  const authenticationStub = new AuthenticationStub()
+  const authenticationStub = stubAuthentication()
   const sut = render(<Login validation={validationStub} authentication={authenticationStub}/>)
   return {
     sut,
