@@ -3,26 +3,24 @@ import { render, RenderResult, fireEvent, cleanup } from '@testing-library/react
 import Login from './login'
 import { Validation } from '@/presentation/protocols/validation'
 
-class ValidationSpy implements Validation {
+class ValidationStub implements Validation {
   errorMessage: string
-  input: object
-  validate (input: object): string {
-    this.input = input
+  validate (fieldName: string, fieldValue: string): string {
     return this.errorMessage
   }
 }
 
 type SutTypes = {
   sut: RenderResult
-  validationSpy: Validation
+  validationStub: Validation
 }
 
 const makeSut = (): SutTypes => {
-  const validationSpy = new ValidationSpy()
-  const sut = render(<Login validation={validationSpy}/>)
+  const validationStub = new ValidationStub()
+  const sut = render(<Login validation={validationStub}/>)
   return {
     sut,
-    validationSpy
+    validationStub
   }
 }
 
@@ -59,21 +57,19 @@ describe('Login Component', () => {
 
   describe('Fields Validation', () => {
     it('should call Validation with correct email', () => {
-      const { sut, validationSpy } = makeSut()
+      const { sut, validationStub } = makeSut()
+      const validateSpy = jest.spyOn(validationStub, 'validate')
       const emailInput = sut.getByTestId('email')
       fireEvent.input(emailInput, { target: { value: 'any_email' } })
-      expect(validationSpy.input).toEqual({
-        email: 'any_email'
-      })
+      expect(validateSpy).toBeCalledWith('email', 'any_email')
     })
 
     it('should call Validation with correct password', () => {
-      const { sut, validationSpy } = makeSut()
+      const { sut, validationStub } = makeSut()
+      const validateSpy = jest.spyOn(validationStub, 'validate')
       const passwordInput = sut.getByTestId('password')
       fireEvent.input(passwordInput, { target: { value: 'any_password' } })
-      expect(validationSpy.input).toEqual({
-        password: 'any_password'
-      })
+      expect(validateSpy).toBeCalledWith('password', 'any_password')
     })
   })
 })
