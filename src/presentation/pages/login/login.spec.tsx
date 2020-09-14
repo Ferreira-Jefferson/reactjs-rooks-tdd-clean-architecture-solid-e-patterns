@@ -1,18 +1,11 @@
 import React from 'react'
 import { render, RenderResult, fireEvent, cleanup } from '@testing-library/react'
 import Login from './login'
-import { Validation } from '@/presentation/protocols/validation'
-
-class ValidationStub implements Validation {
-  errorMessage: string
-  validate (fieldName: string, fieldValue: string): string {
-    return this.errorMessage
-  }
-}
+import { ValidationStub } from '@/presentation/test/stub-validation'
 
 type SutTypes = {
   sut: RenderResult
-  validationStub: Validation
+  validationStub: ValidationStub
 }
 
 const makeSut = (): SutTypes => {
