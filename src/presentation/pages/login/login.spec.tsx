@@ -2,7 +2,7 @@ import React from 'react'
 import faker from 'faker'
 import { render, RenderResult, fireEvent, cleanup } from '@testing-library/react'
 import { Validation } from '@/presentation/protocols/validation'
-import { stubValidation, stubAuthentication, fakeLoginModel } from '@/presentation/test'
+import { stubValidation, stubAuthentication, fakeLoginModel, fakeEmail, fakePassword } from '@/presentation/test'
 import { Authentication } from '@/domain/usecases'
 import Login from './login'
 
@@ -55,93 +55,89 @@ describe('Login Component', () => {
   })
 
   describe('Fields Validation', () => {
-    describe('Fails', () => {
-      it('should call Validation with correct email', () => {
-        const { sut, validationStub } = makeSut()
-        const validateSpy = jest.spyOn(validationStub, 'validate')
-        const emailInput = sut.getByTestId('email')
-        const email = faker.internet.email()
-        fireEvent.input(emailInput, { target: { value: email } })
-        fireEvent.blur(emailInput)
-        expect(validateSpy).toBeCalledWith('email', email)
-      })
+    const fakeValidateFails = (sut: RenderResult, testId: string, errorMessage: string): void => {
+      const passwordStatus = sut.getByTestId(testId)
+      expect(passwordStatus.title).toBe(errorMessage)
+      expect(passwordStatus.textContent).toBe('✗')
+    }
 
-      it('should call Validation with correct password', () => {
-        const { sut, validationStub } = makeSut()
-        const validateSpy = jest.spyOn(validationStub, 'validate')
-        const passwordInput = sut.getByTestId('password')
-        const password = faker.internet.password()
-        fireEvent.input(passwordInput, { target: { value: password } })
-        fireEvent.blur(passwordInput)
-        expect(validateSpy).toBeCalledWith('password', password)
-      })
+    const fakeValidateSuccess = (sut: RenderResult, testId: string): void => {
+      const emailStatus = sut.getByTestId(testId)
+      expect(emailStatus.title).toBe('Campo preenchido corretamente')
+      expect(emailStatus.textContent).toBe('✓')
+    }
 
-      it('should show email error if Validation fails', () => {
-        const { sut, validationStub } = makeSut()
-        const errorMessage = faker.random.words()
-        jest.spyOn(validationStub, 'validate').mockReturnValueOnce(errorMessage)
-        const emailInput = sut.getByTestId('email')
-        fireEvent.blur(emailInput)
-        const emailStatus = sut.getByTestId('email-status')
-        expect(emailStatus.title).toBe(errorMessage)
-        expect(emailStatus.textContent).toBe('✗')
-      })
-
-      it('should show password error if Validation fails', () => {
-        const { sut, validationStub } = makeSut()
-        const errorMessage = faker.random.words()
-        jest.spyOn(validationStub, 'validate').mockReturnValueOnce(errorMessage)
-        const passwordInput = sut.getByTestId('password')
-        fireEvent.blur(passwordInput)
-        const passwordStatus = sut.getByTestId('password-status')
-        expect(passwordStatus.title).toBe(errorMessage)
-        expect(passwordStatus.textContent).toBe('✗')
-      })
-
-      it('should show valid email state if Validation succeeds', () => {
-        const { sut } = makeSut()
-        fakeLoginModel(sut)
-        const emailStatus = sut.getByTestId('email-status')
-        expect(emailStatus.title).toBe('Campo preenchido corretamente')
-        expect(emailStatus.textContent).toBe('✓')
-      })
-
-      it('should show valid password state if Validation succeeds', () => {
-        const { sut } = makeSut()
-        fakeLoginModel(sut)
-        const passwordStatus = sut.getByTestId('password-status')
-        expect(passwordStatus.title).toBe('Campo preenchido corretamente')
-        expect(passwordStatus.textContent).toBe('✓')
-      })
+    it('should call Validation with correct email', () => {
+      const { sut, validationStub } = makeSut()
+      const validateSpy = jest.spyOn(validationStub, 'validate')
+      const email = faker.internet.email()
+      fakeEmail(sut, email)
+      expect(validateSpy).toBeCalledWith('email', email)
     })
 
-    describe('Success', () => {
-      it('should enable button if form is valid', () => {
-        const { sut } = makeSut()
-        fakeLoginModel(sut)
-        const submitButton = sut.getByTestId('submit') as HTMLButtonElement
-        expect(submitButton.disabled).toBe(false)
-      })
+    it('should call Validation with correct password', () => {
+      const { sut, validationStub } = makeSut()
+      const validateSpy = jest.spyOn(validationStub, 'validate')
+      const password = faker.internet.password()
+      fakePassword(sut, password)
+      expect(validateSpy).toBeCalledWith('password', password)
+    })
 
-      it('should show spinner on submit', () => {
-        const { sut } = makeSut()
-        fakeLoginModel(sut)
-        const submitButton = sut.getByTestId('submit')
-        fireEvent.click(submitButton)
-        const spinner = sut.getByTestId('spinner')
-        expect(spinner).toBeTruthy()
-      })
+    it('should show email error if Validation fails', () => {
+      const { sut, validationStub } = makeSut()
+      const errorMessage = faker.random.words()
+      jest.spyOn(validationStub, 'validate').mockReturnValueOnce(errorMessage)
+      fakeEmail(sut)
+      fakeValidateFails(sut, 'email-status', errorMessage)
+    })
 
-      it('should call Authentication with correct values', () => {
-        const { sut, authenticationStub } = makeSut()
-        const authSpy = jest.spyOn(authenticationStub, 'auth')
-        const { emailInput, passwordInput } = fakeLoginModel(sut)
-        const submitButton = sut.getByTestId('submit')
-        fireEvent.click(submitButton)
-        expect(authSpy).toBeCalledWith({
-          email: emailInput?.value,
-          password: passwordInput?.value
-        })
+    it('should show password error if Validation fails', () => {
+      const { sut, validationStub } = makeSut()
+      const errorMessage = faker.random.words()
+      jest.spyOn(validationStub, 'validate').mockReturnValueOnce(errorMessage)
+      fakePassword(sut)
+      fakeValidateFails(sut, 'password-status', errorMessage)
+    })
+
+    it('should show valid email state if Validation succeeds', () => {
+      const { sut } = makeSut()
+      fakeLoginModel(sut)
+      fakeValidateSuccess(sut, 'email-status')
+    })
+
+    it('should show valid password state if Validation succeeds', () => {
+      const { sut } = makeSut()
+      fakeLoginModel(sut)
+      fakeValidateSuccess(sut, 'password-status')
+    })
+  })
+
+  describe('Success', () => {
+    it('should enable button if form is valid', () => {
+      const { sut } = makeSut()
+      fakeLoginModel(sut)
+      const submitButton = sut.getByTestId('submit') as HTMLButtonElement
+      expect(submitButton.disabled).toBe(false)
+    })
+
+    it('should show spinner on submit', () => {
+      const { sut } = makeSut()
+      fakeLoginModel(sut)
+      const submitButton = sut.getByTestId('submit')
+      fireEvent.click(submitButton)
+      const spinner = sut.getByTestId('spinner')
+      expect(spinner).toBeTruthy()
+    })
+
+    it('should call Authentication with correct values', () => {
+      const { sut, authenticationStub } = makeSut()
+      const authSpy = jest.spyOn(authenticationStub, 'auth')
+      const { emailInput, passwordInput } = fakeLoginModel(sut)
+      const submitButton = sut.getByTestId('submit')
+      fireEvent.click(submitButton)
+      expect(authSpy).toBeCalledWith({
+        email: emailInput?.value,
+        password: passwordInput?.value
       })
     })
   })
