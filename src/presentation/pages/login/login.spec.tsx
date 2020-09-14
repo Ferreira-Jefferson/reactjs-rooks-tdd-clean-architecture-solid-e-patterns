@@ -1,7 +1,8 @@
 import React from 'react'
 import faker from 'faker'
 import { render, RenderResult, fireEvent, cleanup } from '@testing-library/react'
-import { ValidationStub } from '@/presentation/test/stub-validation'
+import { Validation } from '@/presentation/protocols/validation'
+import { stubValidation } from '@/presentation/test/stub-validation'
 import { Authentication, AuthenticationParams } from '@/domain/usecases'
 import { AccountModel } from '@/domain/models'
 import { fakeAccountModel } from '@/domain/test'
@@ -33,12 +34,12 @@ class AuthenticationStub implements Authentication {
 
 type SutTypes = {
   sut: RenderResult
-  validationStub: ValidationStub
+  validationStub: Validation
   authenticationStub: AuthenticationStub
 }
 
 const makeSut = (): SutTypes => {
-  const validationStub = new ValidationStub()
+  const validationStub = stubValidation()
   const authenticationStub = new AuthenticationStub()
   const sut = render(<Login validation={validationStub} authentication={authenticationStub}/>)
   return {
