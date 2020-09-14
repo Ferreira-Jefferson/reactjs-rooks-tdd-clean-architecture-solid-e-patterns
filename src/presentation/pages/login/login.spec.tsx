@@ -2,6 +2,7 @@ import React from 'react'
 import { render, RenderResult, fireEvent, cleanup } from '@testing-library/react'
 import Login from './login'
 import { ValidationStub } from '@/presentation/test/stub-validation'
+import faker from 'faker'
 
 type SutTypes = {
   sut: RenderResult
@@ -53,16 +54,18 @@ describe('Login Component', () => {
       const { sut, validationStub } = makeSut()
       const validateSpy = jest.spyOn(validationStub, 'validate')
       const emailInput = sut.getByTestId('email')
-      fireEvent.input(emailInput, { target: { value: 'any_email' } })
-      expect(validateSpy).toBeCalledWith('email', 'any_email')
+      const email = faker.internet.email()
+      fireEvent.input(emailInput, { target: { value: email } })
+      expect(validateSpy).toBeCalledWith('email', email)
     })
 
     it('should call Validation with correct password', () => {
       const { sut, validationStub } = makeSut()
       const validateSpy = jest.spyOn(validationStub, 'validate')
       const passwordInput = sut.getByTestId('password')
-      fireEvent.input(passwordInput, { target: { value: 'any_password' } })
-      expect(validateSpy).toBeCalledWith('password', 'any_password')
+      const password = faker.internet.password()
+      fireEvent.input(passwordInput, { target: { value: password } })
+      expect(validateSpy).toBeCalledWith('password', password)
     })
   })
 })
