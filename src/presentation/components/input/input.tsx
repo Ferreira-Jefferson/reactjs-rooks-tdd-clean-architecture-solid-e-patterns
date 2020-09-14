@@ -19,8 +19,8 @@ const Input: React.FC<Props> = (props: Props) => {
       [event.target.name]: validation.validate(event.target.name, event.target.value)
     })
   }
-  const getStatus = (): string => '*'
-  const getTitle = (): string => message
+  const getStatus = (): string => message ? '*' : '✓'
+  const getTitle = (): string => message || 'Campo preencido corretamente'
   return (
     <div className={Styles.inputWrap}>
       <input {...props} data-testid={props.name} onChange={handleChange} onBlur={handleErrorChange}/>
