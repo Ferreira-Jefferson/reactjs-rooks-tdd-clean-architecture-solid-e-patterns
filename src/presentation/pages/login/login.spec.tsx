@@ -38,14 +38,14 @@ describe('Login Component', () => {
       const { sut } = makeSut()
       const emailStatus = sut.getByTestId('email-status')
       expect(emailStatus.title).toBe('Campo obrigatório')
-      expect(emailStatus.textContent).toBe('*')
+      expect(emailStatus.textContent).toBe('✗')
     })
 
     it('should input password is required', () => {
       const { sut } = makeSut()
       const passwordStatus = sut.getByTestId('password-status')
       expect(passwordStatus.title).toBe('Campo obrigatório')
-      expect(passwordStatus.textContent).toBe('*')
+      expect(passwordStatus.textContent).toBe('✗')
     })
   })
 
@@ -78,7 +78,7 @@ describe('Login Component', () => {
       fireEvent.blur(emailInput)
       const emailStatus = sut.getByTestId('email-status')
       expect(emailStatus.title).toBe(errorMessage)
-      expect(emailStatus.textContent).toBe('*')
+      expect(emailStatus.textContent).toBe('✗')
     })
 
     it('should show password error if Validation fails', () => {
@@ -89,7 +89,7 @@ describe('Login Component', () => {
       fireEvent.blur(passwordInput)
       const passwordStatus = sut.getByTestId('password-status')
       expect(passwordStatus.title).toBe(errorMessage)
-      expect(passwordStatus.textContent).toBe('*')
+      expect(passwordStatus.textContent).toBe('✗')
     })
 
     it('should show valid email state if Validation succeeds', () => {
@@ -98,7 +98,7 @@ describe('Login Component', () => {
       const emailInput = sut.getByTestId('email')
       fireEvent.blur(emailInput)
       const emailStatus = sut.getByTestId('email-status')
-      expect(emailStatus.title).toBe('Campo preencido corretamente')
+      expect(emailStatus.title).toBe('Campo preenchido corretamente')
       expect(emailStatus.textContent).toBe('✓')
     })
 
@@ -108,7 +108,7 @@ describe('Login Component', () => {
       const passwordInput = sut.getByTestId('password')
       fireEvent.blur(passwordInput)
       const passwordStatus = sut.getByTestId('password-status')
-      expect(passwordStatus.title).toBe('Campo preencido corretamente')
+      expect(passwordStatus.title).toBe('Campo preenchido corretamente')
       expect(passwordStatus.textContent).toBe('✓')
     })
   })

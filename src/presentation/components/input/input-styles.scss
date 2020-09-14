@@ -8,11 +8,24 @@ input {
   flex-grow: 1;
 }
 
-.status {
+.status {  
   position: absolute;
   right: 8px;
-  color: red;
   font-weight: 700;
-  cursor: help;
+  cursor: help;  
+  display: none;
 }
+
+.statusFail {
+  @extend .status;  
+  display: block;
+  color: rgb(201, 55, 55)
+}
+
+.statusOk {
+  @extend .status; 
+  display: block;
+  color: rgb(46, 145, 33);
+}
+
 }
