@@ -1,5 +1,6 @@
 import React from 'react'
 import faker from 'faker'
+import 'jest-localstorage-mock'
 import { render, RenderResult, fireEvent, cleanup, waitFor } from '@testing-library/react'
 import { Validation } from '@/presentation/protocols/validation'
 import { stubValidation, stubAuthentication, fakeLoginModel, fakeEmail, fakePassword } from '@/presentation/test'
@@ -25,6 +26,9 @@ const makeSut = (): SutTypes => {
 }
 
 describe('Login Component', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
   afterEach(cleanup)
 
   describe('Initial State', () => {
@@ -171,6 +175,17 @@ describe('Login Component', () => {
       const mainError = sut.getByTestId('main-error')
       expect(mainError.textContent).toBe(error.message)
       expect(errorWrap.childElementCount).toBe(1)
+    })
+
+    it('should add accessToken to localStore on success', async () => {
+      const { sut, authenticationStub } = makeSut()
+      const accessToken = 'any_token'
+      jest.spyOn(authenticationStub, 'auth').mockResolvedValueOnce({ accessToken })
+      fakeLoginModel(sut)
+      const submitButton = sut.getByTestId('submit')
+      fireEvent.click(submitButton)
+      await waitFor(() => sut.getByTestId('form'))
+      expect(localStorage.setItem).toBeCalledWith('accessToken', accessToken)
     })
   })
 })
