@@ -112,7 +112,7 @@ describe('Login Component', () => {
     })
   })
 
-  describe('Success', () => {
+  describe('Submit', () => {
     it('should enable button if form is valid', () => {
       const { sut } = makeSut()
       fakeLoginModel(sut)
