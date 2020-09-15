@@ -140,5 +140,15 @@ describe('Login Component', () => {
         password: passwordInput?.value
       })
     })
+
+    it('should call Authentication only once', () => {
+      const { sut, authenticationStub } = makeSut()
+      const authSpy = jest.spyOn(authenticationStub, 'auth')
+      fakeLoginModel(sut)
+      const submitButton = sut.getByTestId('submit')
+      fireEvent.click(submitButton)
+      fireEvent.click(submitButton)
+      expect(authSpy).toBeCalledTimes(1)
+    })
   })
 })
