@@ -5,17 +5,18 @@ import faker from 'faker'
 import 'jest-localstorage-mock'
 import { render, RenderResult, fireEvent, cleanup, waitFor } from '@testing-library/react'
 import { Validation } from '@/presentation/protocols/validation'
+import { InvalidCredentialsError } from '@/domain/errors'
 import { stubValidation, stubAuthentication, fakeLoginModel, fakeEmail, fakePassword } from '@/presentation/test'
 import { Authentication } from '@/domain/usecases'
 import Login from './login'
-import { InvalidCredentialsError } from '@/domain/errors'
 
 type SutTypes = {
   sut: RenderResult
   validationStub: Validation
   authenticationStub: Authentication
 }
-const history = createMemoryHistory()
+
+const history = createMemoryHistory({ initialEntries: ['/login'] })
 const makeSut = (): SutTypes => {
   const validationStub = stubValidation()
   const authenticationStub = stubAuthentication()
@@ -56,6 +57,7 @@ describe('Login Component', () => {
       expect(emailStatus.title).toBe('Campo obrigatório')
       expect(emailStatus.textContent).toBe('✗')
     })
+
     it('should input password is required', () => {
       const { sut } = makeSut()
       const passwordStatus = sut.getByTestId('password-status')
@@ -65,13 +67,13 @@ describe('Login Component', () => {
   })
 
   describe('Fields Validation', () => {
-    const fakeValidateFails = (sut: RenderResult, testId: string, errorMessage: string): void => {
+    const testValidateFails = (sut: RenderResult, testId: string, errorMessage: string): void => {
       const passwordStatus = sut.getByTestId(testId)
       expect(passwordStatus.title).toBe(errorMessage)
       expect(passwordStatus.textContent).toBe('✗')
     }
 
-    const fakeValidateSuccess = (sut: RenderResult, testId: string): void => {
+    const testValidateSuccess = (sut: RenderResult, testId: string): void => {
       const emailStatus = sut.getByTestId(testId)
       expect(emailStatus.title).toBe('Campo preenchido corretamente')
       expect(emailStatus.textContent).toBe('✓')
@@ -98,7 +100,7 @@ describe('Login Component', () => {
       const errorMessage = faker.random.words()
       jest.spyOn(validationStub, 'validate').mockReturnValueOnce(errorMessage)
       fakeEmail(sut)
-      fakeValidateFails(sut, 'email-status', errorMessage)
+      testValidateFails(sut, 'email-status', errorMessage)
     })
 
     it('should show password error if Validation fails', () => {
@@ -106,19 +108,19 @@ describe('Login Component', () => {
       const errorMessage = faker.random.words()
       jest.spyOn(validationStub, 'validate').mockReturnValueOnce(errorMessage)
       fakePassword(sut)
-      fakeValidateFails(sut, 'password-status', errorMessage)
+      testValidateFails(sut, 'password-status', errorMessage)
     })
 
     it('should show valid email state if Validation succeeds', () => {
       const { sut } = makeSut()
       fakeEmail(sut)
-      fakeValidateSuccess(sut, 'email-status')
+      testValidateSuccess(sut, 'email-status')
     })
 
     it('should show valid password state if Validation succeeds', () => {
       const { sut } = makeSut()
       fakePassword(sut)
-      fakeValidateSuccess(sut, 'password-status')
+      testValidateSuccess(sut, 'password-status')
     })
   })
 
@@ -180,6 +182,13 @@ describe('Login Component', () => {
       fakeLoginModel(sut)
       await waitFor(() => sut.getByTestId('form'))
       expect(localStorage.setItem).toBeCalledWith('accessToken', accessToken)
+    })
+
+    it('should go to main page on success', () => {
+      const { sut } = makeSut()
+      fakeLoginModel(sut)
+      expect(history.length).toBe(1)
+      expect(history.location.pathname).toBe('/')
     })
   })
 
