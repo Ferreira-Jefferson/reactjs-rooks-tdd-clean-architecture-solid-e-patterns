@@ -106,30 +106,27 @@ describe('Login Component', () => {
 
     it('should show valid email state if Validation succeeds', () => {
       const { sut } = makeSut()
-      fakeLoginModel(sut)
+      fakeEmail(sut)
       fakeValidateSuccess(sut, 'email-status')
     })
 
     it('should show valid password state if Validation succeeds', () => {
       const { sut } = makeSut()
-      fakeLoginModel(sut)
+      fakePassword(sut)
       fakeValidateSuccess(sut, 'password-status')
     })
   })
 
-  describe('Submit', () => {
+  describe('Authentication', () => {
     it('should enable button if form is valid', () => {
       const { sut } = makeSut()
-      fakeLoginModel(sut)
-      const submitButton = sut.getByTestId('submit') as HTMLButtonElement
+      const { submitButton } = fakeLoginModel(sut)
       expect(submitButton.disabled).toBe(false)
     })
 
     it('should show spinner on submit', () => {
       const { sut } = makeSut()
       fakeLoginModel(sut)
-      const submitButton = sut.getByTestId('submit')
-      fireEvent.click(submitButton)
       const spinner = sut.getByTestId('spinner')
       expect(spinner).toBeTruthy()
     })
@@ -138,8 +135,6 @@ describe('Login Component', () => {
       const { sut, authenticationStub } = makeSut()
       const authSpy = jest.spyOn(authenticationStub, 'auth')
       const { emailInput, passwordInput } = fakeLoginModel(sut)
-      const submitButton = sut.getByTestId('submit')
-      fireEvent.click(submitButton)
       expect(authSpy).toBeCalledWith({
         email: emailInput?.value,
         password: passwordInput?.value
@@ -150,9 +145,7 @@ describe('Login Component', () => {
       const { sut, authenticationStub } = makeSut()
       const authSpy = jest.spyOn(authenticationStub, 'auth')
       fakeLoginModel(sut)
-      const submitButton = sut.getByTestId('submit')
-      fireEvent.click(submitButton)
-      fireEvent.click(submitButton)
+      fakeLoginModel(sut)
       expect(authSpy).toBeCalledTimes(1)
     })
 
@@ -168,8 +161,6 @@ describe('Login Component', () => {
       const error = new InvalidCredentialsError()
       jest.spyOn(authenticationStub, 'auth').mockRejectedValueOnce(error)
       fakeLoginModel(sut)
-      const submitButton = sut.getByTestId('submit')
-      fireEvent.click(submitButton)
       const errorWrap = sut.getByTestId('error-wrap')
       await waitFor(() => errorWrap)
       const mainError = sut.getByTestId('main-error')
@@ -182,8 +173,6 @@ describe('Login Component', () => {
       const accessToken = 'any_token'
       jest.spyOn(authenticationStub, 'auth').mockResolvedValueOnce({ accessToken })
       fakeLoginModel(sut)
-      const submitButton = sut.getByTestId('submit')
-      fireEvent.click(submitButton)
       await waitFor(() => sut.getByTestId('form'))
       expect(localStorage.setItem).toBeCalledWith('accessToken', accessToken)
     })

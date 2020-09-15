@@ -4,14 +4,18 @@ import faker from 'faker'
 type LoginModel = {
   emailInput: HTMLInputElement
   passwordInput: HTMLInputElement
+  submitButton: HTMLButtonElement
 }
 
 export const fakeLoginModel = (sut: RenderResult): LoginModel => {
   const emailInput = fakeEmail(sut, faker.internet.email())
   const passwordInput = fakePassword(sut, faker.internet.password())
+  const submitButton = sut.getByTestId('submit') as HTMLButtonElement
+  fireEvent.click(submitButton)
   return {
     emailInput,
-    passwordInput
+    passwordInput,
+    submitButton
   }
 }
 
