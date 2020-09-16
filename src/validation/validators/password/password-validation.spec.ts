@@ -2,6 +2,7 @@ import { PasswordValidation } from './password-validation'
 import { PasswordValidator } from '@/validation/protocols'
 import { stubPasswordRegexValidator } from '@/validation/test/stub-password'
 import faker from 'faker'
+import { InvalidFieldError } from '@/validation/errors'
 
 type SutTypes = {
   sut: PasswordValidation
@@ -24,5 +25,12 @@ describe('PasswordValidation', () => {
     const password = faker.internet.password()
     sut.validate(password)
     expect(validateSpy).toBeCalledWith(password)
+  })
+
+  it('should return an error if password is invalid', () => {
+    const { sut, passwordRegexValidatorStub } = makeSut()
+    jest.spyOn(passwordRegexValidatorStub, 'validate').mockReturnValue(false)
+    const error = sut.validate('invalid_password')
+    expect(error).toEqual(new InvalidFieldError('password'))
   })
 })
