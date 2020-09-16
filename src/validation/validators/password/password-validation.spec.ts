@@ -33,4 +33,10 @@ describe('PasswordValidation', () => {
     const error = sut.validate('invalid_password')
     expect(error).toEqual(new InvalidFieldError('password'))
   })
+
+  it('should return falsy if password is valid', () => {
+    const { sut } = makeSut()
+    const error = sut.validate(faker.internet.password())
+    expect(error).toBeFalsy()
+  })
 })
