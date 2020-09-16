@@ -8,4 +8,10 @@ describe('EmailRegexValidator', () => {
     const isValid = sut.validate(faker.random.word())
     expect(isValid).toBe(false)
   })
+
+  it('should return true if email is valid', () => {
+    const sut = makeSut()
+    const isValid = sut.validate(faker.internet.email())
+    expect(isValid).toBe(true)
+  })
 })
