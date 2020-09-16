@@ -1,13 +1,14 @@
-export type PasswordOptions = {
+export type PasswordRules = {
   min?: number
   max?: number
   upper?: boolean
   lower?: boolean
   digits?: boolean
   space?: boolean
-  blackList?: [string]
+  symbols?: boolean
+  blackList?: string[]
 }
 
 export interface PasswordValidator {
-  validate: (password: string, opts?: PasswordOptions) => boolean
+  validate: (password: string, rules?: PasswordRules) => boolean
 }
