@@ -20,6 +20,9 @@ export class PasswordRegexValidator implements PasswordValidator {
     if (rules.lower) {
       results.push(this.lower())
     }
+    if (rules.digits) {
+      results.push(this.digits())
+    }
     return !results.includes(false)
   }
 
@@ -40,6 +43,11 @@ export class PasswordRegexValidator implements PasswordValidator {
 
   private lower (): boolean {
     const regex = new RegExp('(?=.*[a-z])', 'g')
+    return regex.test(this.password)
+  }
+
+  private digits (): boolean {
+    const regex = new RegExp('(?=.*[0-9])', 'g')
     return regex.test(this.password)
   }
 }
