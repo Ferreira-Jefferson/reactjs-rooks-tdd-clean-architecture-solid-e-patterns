@@ -131,4 +131,28 @@ describe('PasswordRegexValidator', () => {
       expect(isValid).toBe(true)
     })
   })
+
+  describe('blackList()', () => {
+    it('should rules.blackList is passed without value in the array it should return true', () => {
+      const sut = makeSut()
+      const noblackList = faker.internet.password()
+      const isValid = sut.validate(noblackList, { blackList: [] })
+      expect(isValid).toBe(true)
+    })
+
+    it('should rules.blackList is passed and the password is in the blacklist it must return false', () => {
+      const sut = makeSut()
+      const password = faker.internet.password()
+      const isValid = sut.validate(password, { blackList: [password] })
+      expect(isValid).toBe(false)
+    })
+
+    it('should rules.blackList is passed and the password is not in the blackList it must return true', () => {
+      const sut = makeSut()
+      const password = faker.internet.password()
+      const passwordForbidden = password + faker.internet.password()
+      const isValid = sut.validate(password, { blackList: [passwordForbidden] })
+      expect(isValid).toBe(true)
+    })
+  })
 })
