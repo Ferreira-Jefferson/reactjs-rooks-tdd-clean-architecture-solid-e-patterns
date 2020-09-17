@@ -17,6 +17,9 @@ export class PasswordRegexValidator implements PasswordValidator {
     if (rules.upper) {
       results.push(this.upper())
     }
+    if (rules.lower) {
+      results.push(this.lower())
+    }
     return !results.includes(false)
   }
 
@@ -32,6 +35,11 @@ export class PasswordRegexValidator implements PasswordValidator {
 
   private upper (): boolean {
     const regex = new RegExp('(?=.*[A-Z])', 'g')
+    return regex.test(this.password)
+  }
+
+  private lower (): boolean {
+    const regex = new RegExp('(?=.*[a-z])', 'g')
     return regex.test(this.password)
   }
 }
