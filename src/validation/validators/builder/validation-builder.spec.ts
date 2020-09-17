@@ -16,4 +16,17 @@ describe('ValidationBuilder', () => {
     const validations = sut.field('any_field').password(stubPasswordRegexValidator()).build()
     expect(validations).toEqual([new PasswordValidation(stubPasswordRegexValidator(), 'any_field')])
   })
+
+  it('should return a list of validations', () => {
+    const validations = sut.field('any_field')
+      .email(mockEmailRegexValidator())
+      .password(stubPasswordRegexValidator())
+      .required()
+      .build()
+    expect(validations).toEqual([
+      new EmailValidation(mockEmailRegexValidator(), 'any_field'),
+      new PasswordValidation(stubPasswordRegexValidator(), 'any_field'),
+      new RequiredFieldValidation('any_field')
+    ])
+  })
 })
