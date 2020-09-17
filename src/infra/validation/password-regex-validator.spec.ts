@@ -81,4 +81,23 @@ describe('PasswordRegexValidator', () => {
       expect(isValid).toBe(true)
     })
   })
+
+  describe('digits()', () => {
+    it('should rules.digits is passed, return false if the password is not have some digits', () => {
+      const sut = makeSut()
+      const noDigit = faker.random.word()
+      const isValid = sut.validate(noDigit, { digits: true })
+      expect(isValid).toBe(false)
+    })
+
+    it('should rules.digits is passed, return true if the password is have some digits', () => {
+      const sut = makeSut()
+      const onlyDigits = faker.random.number().toString()
+      let isValid = sut.validate(onlyDigits, { digits: true })
+      expect(isValid).toBe(true)
+      const M1x3d = onlyDigits + faker.random.word()
+      isValid = sut.validate(M1x3d, { digits: true })
+      expect(isValid).toBe(true)
+    })
+  })
 })
