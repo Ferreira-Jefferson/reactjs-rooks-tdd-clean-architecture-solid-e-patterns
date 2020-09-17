@@ -85,7 +85,7 @@ describe('PasswordRegexValidator', () => {
   describe('digits()', () => {
     it('should rules.digits is passed, return false if the password is not have some digits', () => {
       const sut = makeSut()
-      const noDigit = faker.random.word()
+      const noDigit = 'abcdABCD!@#$'
       const isValid = sut.validate(noDigit, { digits: true })
       expect(isValid).toBe(false)
     })
@@ -120,7 +120,7 @@ describe('PasswordRegexValidator', () => {
   describe('symbols()', () => {
     it('should rules.symbols is passed, return false if the password is not have some symbols', () => {
       const sut = makeSut()
-      const nosymbols = faker.random.word()
+      const nosymbols = faker.random.number().toString()
       const isValid = sut.validate(nosymbols, { symbols: true })
       expect(isValid).toBe(false)
     })

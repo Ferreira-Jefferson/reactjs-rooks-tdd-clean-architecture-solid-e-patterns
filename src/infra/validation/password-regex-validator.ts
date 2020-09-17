@@ -71,12 +71,10 @@ export class PasswordRegexValidator implements PasswordValidator {
   }
 
   private blackList (blackList: string[]): boolean {
-    if (blackList) {
-      for (const passwordForbidden of blackList) {
-        const regex = new RegExp(`^${passwordForbidden}$`, 'i')
-        if (regex.test(this.password)) {
-          return false
-        }
+    for (const passwordForbidden of blackList) {
+      const regex = new RegExp(`^${passwordForbidden}$`, 'i')
+      if (regex.test(this.password)) {
+        return false
       }
     }
     return true
