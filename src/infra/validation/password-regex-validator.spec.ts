@@ -43,4 +43,23 @@ describe('PasswordRegexValidator', () => {
       expect(isValidBigger).toBe(true)
     })
   })
+
+  describe('upper()', () => {
+    it('should rules.upper is passed, return false if the password is not have some capitalized letter', () => {
+      const sut = makeSut()
+      const lower = faker.random.word().toLowerCase()
+      const isValid = sut.validate(lower, { upper: true })
+      expect(isValid).toBe(false)
+    })
+
+    it('should rules.upper is passed, return true if the password is have some capitalized letter', () => {
+      const sut = makeSut()
+      const UPPER = faker.random.word().toUpperCase()
+      let isValid = sut.validate(UPPER, { upper: true })
+      expect(isValid).toBe(true)
+      const MixeD = UPPER + faker.random.word().toLowerCase()
+      isValid = sut.validate(MixeD, { upper: true })
+      expect(isValid).toBe(true)
+    })
+  })
 })
