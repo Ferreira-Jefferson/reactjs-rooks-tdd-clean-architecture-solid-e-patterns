@@ -23,6 +23,9 @@ export class PasswordRegexValidator implements PasswordValidator {
     if (rules.digits) {
       results.push(this.digits())
     }
+    if (rules.space) {
+      results.push(this.space())
+    }
     return !results.includes(false)
   }
 
@@ -48,6 +51,11 @@ export class PasswordRegexValidator implements PasswordValidator {
 
   private digits (): boolean {
     const regex = new RegExp('(?=.*[0-9])', 'g')
+    return regex.test(this.password)
+  }
+
+  private space (): boolean {
+    const regex = new RegExp('(?=.*[ \\t])', 'g')
     return regex.test(this.password)
   }
 }
