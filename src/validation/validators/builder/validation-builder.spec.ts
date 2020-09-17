@@ -1,5 +1,5 @@
-import { ValidationBuilder as sut, RequiredFieldValidation, EmailValidation } from '@/validation/validators'
-import { mockEmailRegexValidator } from '@/validation/test/mock-email'
+import { ValidationBuilder as sut, RequiredFieldValidation, EmailValidation, PasswordValidation } from '@/validation/validators'
+import { mockEmailRegexValidator, stubPasswordRegexValidator } from '@/validation/test'
 
 describe('ValidationBuilder', () => {
   it('should return RequiredFieldValidation', () => {
@@ -7,8 +7,13 @@ describe('ValidationBuilder', () => {
     expect(validations).toEqual([new RequiredFieldValidation('any_field')])
   })
 
-  it('should return EmailValidation ', () => {
+  it('should return EmailValidation', () => {
     const validations = sut.field('any_field').email(mockEmailRegexValidator()).build()
     expect(validations).toEqual([new EmailValidation(mockEmailRegexValidator(), 'any_field')])
+  })
+
+  it('should return PasswordValidation', () => {
+    const validations = sut.field('any_field').password(stubPasswordRegexValidator()).build()
+    expect(validations).toEqual([new PasswordValidation(stubPasswordRegexValidator(), 'any_field')])
   })
 })
