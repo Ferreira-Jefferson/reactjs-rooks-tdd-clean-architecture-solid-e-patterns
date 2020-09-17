@@ -26,6 +26,9 @@ export class PasswordRegexValidator implements PasswordValidator {
     if (rules.space) {
       results.push(this.space())
     }
+    if (rules.symbols) {
+      results.push(this.symbols())
+    }
     return !results.includes(false)
   }
 
@@ -56,6 +59,11 @@ export class PasswordRegexValidator implements PasswordValidator {
 
   private space (): boolean {
     const regex = new RegExp('(?=.*[ \\t])', 'g')
+    return regex.test(this.password)
+  }
+
+  private symbols (): boolean {
+    const regex = new RegExp('(?=.*[-}{@!#$%&^+.,.^?~=+*_\\(\\)\\[\\]\\/\\|])', 'g')
     return regex.test(this.password)
   }
 }
