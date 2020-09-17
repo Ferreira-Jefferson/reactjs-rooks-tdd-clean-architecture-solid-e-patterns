@@ -1,32 +1,37 @@
 import { ValidationBuilder as sut, RequiredFieldValidation, EmailValidation, PasswordValidation } from '@/validation/validators'
 import { mockEmailRegexValidator, stubPasswordRegexValidator } from '@/validation/test'
+import faker from 'faker'
 
 describe('ValidationBuilder', () => {
   it('should return RequiredFieldValidation', () => {
-    const validations = sut.field('any_field').required().build()
-    expect(validations).toEqual([new RequiredFieldValidation('any_field')])
+    const field = faker.database.column()
+    const validations = sut.field(field).required().build()
+    expect(validations).toEqual([new RequiredFieldValidation(field)])
   })
 
   it('should return EmailValidation', () => {
-    const validations = sut.field('any_field').email(mockEmailRegexValidator()).build()
-    expect(validations).toEqual([new EmailValidation(mockEmailRegexValidator(), 'any_field')])
+    const field = faker.database.column()
+    const validations = sut.field(field).email(mockEmailRegexValidator()).build()
+    expect(validations).toEqual([new EmailValidation(mockEmailRegexValidator(), field)])
   })
 
   it('should return PasswordValidation', () => {
-    const validations = sut.field('any_field').password(stubPasswordRegexValidator()).build()
-    expect(validations).toEqual([new PasswordValidation(stubPasswordRegexValidator(), 'any_field')])
+    const field = faker.database.column()
+    const validations = sut.field(field).password(stubPasswordRegexValidator()).build()
+    expect(validations).toEqual([new PasswordValidation(stubPasswordRegexValidator(), field)])
   })
 
   it('should return a list of validations', () => {
-    const validations = sut.field('any_field')
+    const field = faker.database.column()
+    const validations = sut.field(field)
       .email(mockEmailRegexValidator())
       .password(stubPasswordRegexValidator())
       .required()
       .build()
     expect(validations).toEqual([
-      new EmailValidation(mockEmailRegexValidator(), 'any_field'),
-      new PasswordValidation(stubPasswordRegexValidator(), 'any_field'),
-      new RequiredFieldValidation('any_field')
+      new EmailValidation(mockEmailRegexValidator(), field),
+      new PasswordValidation(stubPasswordRegexValidator(), field),
+      new RequiredFieldValidation(field)
     ])
   })
 })
