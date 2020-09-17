@@ -1,37 +1,37 @@
 import { ValidationComposite } from './validation-composite'
-import { FieldValidationSpy } from '@/validation/test/spy-field-validation'
+import { FieldValidationStub } from '@/validation/test/stub-field-validation'
 
 type SutTypes = {
   sut: ValidationComposite
-  fieldValidationSpy: FieldValidationSpy[]
+  fieldValidationStub: FieldValidationStub[]
 }
 
 const makeSut = (): SutTypes => {
-  const fieldValidationSpy = [
-    new FieldValidationSpy('any_field'),
-    new FieldValidationSpy('any_field')
+  const fieldValidationStub = [
+    new FieldValidationStub('any_field'),
+    new FieldValidationStub('any_field')
   ]
-  const sut = new ValidationComposite(fieldValidationSpy)
+  const sut = new ValidationComposite(fieldValidationStub)
   return {
     sut,
-    fieldValidationSpy
+    fieldValidationStub
   }
 }
 
 describe('ValidationComposite', () => {
   it('should return error if any validation fails', () => {
-    const { sut, fieldValidationSpy } = makeSut()
+    const { sut, fieldValidationStub } = makeSut()
     const errorField = new Error('any_error_message')
-    fieldValidationSpy[1].error = errorField
+    jest.spyOn(fieldValidationStub[1], 'validate').mockReturnValueOnce(errorField)
     const error = sut.validate('any_field', 'any_value')
     expect(error).toBe(errorField.message)
   })
 
   it('should return the first error if more than one validation fails', () => {
-    const { sut, fieldValidationSpy } = makeSut()
+    const { sut, fieldValidationStub } = makeSut()
     const firstError = new Error('first_error_message')
-    fieldValidationSpy[0].error = firstError
-    fieldValidationSpy[1].error = new Error('second_error_message')
+    jest.spyOn(fieldValidationStub[0], 'validate').mockReturnValueOnce(firstError)
+    jest.spyOn(fieldValidationStub[1], 'validate').mockReturnValueOnce(new Error('second_error_message'))
     const error = sut.validate('any_field', 'any_value')
     expect(error).toBe(firstError.message)
   })
