@@ -100,4 +100,21 @@ describe('PasswordRegexValidator', () => {
       expect(isValid).toBe(true)
     })
   })
+
+  describe('space()', () => {
+    it('should rules.space is passed, return false if the password is not have some space or tab', () => {
+      const sut = makeSut()
+      const noSpace = faker.random.word()
+      const isValid = sut.validate(noSpace, { space: true })
+      expect(isValid).toBe(false)
+    })
+
+    it('should rules.space is passed, return true if the password is have some space or tab', () => {
+      const sut = makeSut()
+      const spaceAndTab = ` \t ${faker.random.words()}\t\t `
+      console.log(spaceAndTab)
+      const isValid = sut.validate(spaceAndTab, { space: true })
+      expect(isValid).toBe(true)
+    })
+  })
 })
