@@ -14,6 +14,9 @@ export class PasswordRegexValidator implements PasswordValidator {
     if (rules.max) {
       results.push(this.max(rules.max))
     }
+    if (rules.upper) {
+      results.push(this.upper())
+    }
     return !results.includes(false)
   }
 
@@ -24,6 +27,11 @@ export class PasswordRegexValidator implements PasswordValidator {
 
   private max (max: number): boolean {
     const regex = new RegExp(`^.{0,${max}}$`, 'gi')
+    return regex.test(this.password)
+  }
+
+  private upper (): boolean {
+    const regex = new RegExp('(?=.*[A-Z])', 'g')
     return regex.test(this.password)
   }
 }
