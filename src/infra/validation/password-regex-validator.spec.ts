@@ -45,20 +45,39 @@ describe('PasswordRegexValidator', () => {
   })
 
   describe('upper()', () => {
-    it('should rules.upper is passed, return false if the password is not have some capitalized letter', () => {
+    it('should rules.upper is passed, return false if the password is not have some uppercase letter', () => {
       const sut = makeSut()
       const lower = faker.random.word().toLowerCase()
       const isValid = sut.validate(lower, { upper: true })
       expect(isValid).toBe(false)
     })
 
-    it('should rules.upper is passed, return true if the password is have some capitalized letter', () => {
+    it('should rules.upper is passed, return true if the password is have some uppercase letter', () => {
       const sut = makeSut()
       const UPPER = faker.random.word().toUpperCase()
       let isValid = sut.validate(UPPER, { upper: true })
       expect(isValid).toBe(true)
       const MixeD = UPPER + faker.random.word().toLowerCase()
       isValid = sut.validate(MixeD, { upper: true })
+      expect(isValid).toBe(true)
+    })
+  })
+
+  describe('lower()', () => {
+    it('should rules.lower is passed, return false if the password is not have some lowercase letter', () => {
+      const sut = makeSut()
+      const UPPER = faker.random.word().toUpperCase()
+      const isValid = sut.validate(UPPER, { lower: true })
+      expect(isValid).toBe(false)
+    })
+
+    it('should rules.lower is passed, return true if the password is have some lowercase letter', () => {
+      const sut = makeSut()
+      const lower = faker.random.word().toLowerCase()
+      let isValid = sut.validate(lower, { lower: true })
+      expect(isValid).toBe(true)
+      const MixeD = lower + faker.random.word().toUpperCase()
+      isValid = sut.validate(MixeD, { lower: true })
       expect(isValid).toBe(true)
     })
   })
