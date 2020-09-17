@@ -1,15 +1,16 @@
 import { ValidationComposite } from './validation-composite'
 import { FieldValidationStub } from '@/validation/test/stub-field-validation'
+import faker from 'faker'
 
 type SutTypes = {
   sut: ValidationComposite
   fieldValidationStub: FieldValidationStub[]
 }
 
-const makeSut = (): SutTypes => {
+const makeSut = (fieldName: string): SutTypes => {
   const fieldValidationStub = [
-    new FieldValidationStub('any_field'),
-    new FieldValidationStub('any_field')
+    new FieldValidationStub(fieldName),
+    new FieldValidationStub(fieldName)
   ]
   const sut = new ValidationComposite(fieldValidationStub)
   return {
@@ -20,25 +21,28 @@ const makeSut = (): SutTypes => {
 
 describe('ValidationComposite', () => {
   it('should return error if any validation fails', () => {
-    const { sut, fieldValidationStub } = makeSut()
-    const errorField = new Error('any_error_message')
+    const fieldName = faker.database.column()
+    const { sut, fieldValidationStub } = makeSut(fieldName)
+    const errorField = new Error(faker.random.words())
     jest.spyOn(fieldValidationStub[1], 'validate').mockReturnValueOnce(errorField)
-    const error = sut.validate('any_field', 'any_value')
+    const error = sut.validate(fieldName, faker.random.word())
     expect(error).toBe(errorField.message)
   })
 
   it('should return the first error if more than one validation fails', () => {
-    const { sut, fieldValidationStub } = makeSut()
-    const firstError = new Error('first_error_message')
+    const fieldName = faker.database.column()
+    const { sut, fieldValidationStub } = makeSut(fieldName)
+    const firstError = new Error(faker.random.words())
     jest.spyOn(fieldValidationStub[0], 'validate').mockReturnValueOnce(firstError)
-    jest.spyOn(fieldValidationStub[1], 'validate').mockReturnValueOnce(new Error('second_error_message'))
-    const error = sut.validate('any_field', 'any_value')
+    jest.spyOn(fieldValidationStub[1], 'validate').mockReturnValueOnce(new Error(faker.random.words()))
+    const error = sut.validate(fieldName, faker.random.word())
     expect(error).toBe(firstError.message)
   })
 
   it('should return falsy if validation not fails', () => {
-    const { sut } = makeSut()
-    const error = sut.validate('any_field', 'any_value')
+    const fieldName = faker.database.column()
+    const { sut } = makeSut(fieldName)
+    const error = sut.validate(fieldName, faker.random.word())
     expect(error).toBeFalsy()
   })
 })
