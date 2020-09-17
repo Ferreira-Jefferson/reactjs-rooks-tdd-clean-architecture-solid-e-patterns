@@ -29,6 +29,9 @@ export class PasswordRegexValidator implements PasswordValidator {
     if (rules.symbols) {
       results.push(this.symbols())
     }
+    if (rules.blackList) {
+      results.push(this.blackList(rules.blackList))
+    }
     return !results.includes(false)
   }
 
@@ -65,5 +68,17 @@ export class PasswordRegexValidator implements PasswordValidator {
   private symbols (): boolean {
     const regex = new RegExp('(?=.*[-}{@!#$%&^+.,.^?~=+*_\\(\\)\\[\\]\\/\\|])', 'g')
     return regex.test(this.password)
+  }
+
+  private blackList (blackList: string[]): boolean {
+    if (blackList) {
+      for (const passwordForbidden of blackList) {
+        const regex = new RegExp(`^${passwordForbidden}$`, 'i')
+        if (regex.test(this.password)) {
+          return false
+        }
+      }
+    }
+    return true
   }
 }
