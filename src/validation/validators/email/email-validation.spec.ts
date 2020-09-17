@@ -1,6 +1,6 @@
 import { EmailValidation } from './email-validation'
 import { EmailValidator } from '@/validation/protocols'
-import { stubEmailRegexValidator } from '@/validation/test/stub-email'
+import { mockEmailRegexValidator } from '@/validation/test/mock-email'
 import faker from 'faker'
 import { InvalidFieldError } from '@/validation/errors'
 
@@ -10,7 +10,7 @@ type SutTypes = {
 }
 
 const makeSut = (): SutTypes => {
-  const emailRegexValidatorStub = stubEmailRegexValidator()
+  const emailRegexValidatorStub = mockEmailRegexValidator()
   const sut = new EmailValidation(emailRegexValidatorStub, 'email')
   return {
     sut,
@@ -30,8 +30,14 @@ describe('EmailValidation', () => {
   it('should return error if email is invalid', () => {
     const { sut, emailRegexValidatorStub } = makeSut()
     jest.spyOn(emailRegexValidatorStub, 'validate').mockReturnValue(false)
-    const error = sut.validate('')
+    const error = sut.validate(faker.random.word())
     expect(error).toEqual(new InvalidFieldError('email'))
+  })
+
+  it('should return falsy if email is empty', () => {
+    const { sut } = makeSut()
+    const error = sut.validate('  ')
+    expect(error).toBeFalsy()
   })
 
   it('should return falsy if email is valid', () => {
