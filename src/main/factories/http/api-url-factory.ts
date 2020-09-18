@@ -1,4 +1,4 @@
 export const makeApiUrl = (path: string): string => {
-  const finalPath = /^\/./.test(path) ? path : `/${path}`
-  return `https://api-clean-node.herokuapp.com/api${finalPath}`
+  const standardizedPath = /^\/./.test(path) ? path : `/${path}`
+  return `${process.env.API_BASE_URL}${standardizedPath}`
 }

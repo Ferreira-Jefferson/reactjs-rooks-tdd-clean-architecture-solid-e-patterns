@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = {
@@ -22,7 +23,7 @@ module.exports = {
       exclude: /node_modules/
     }, {
       test: /\.scss$/,
-        use: [{
+      use: [{
         loader: 'style-loader'
       }, {
         loader: 'css-loader',
@@ -44,6 +45,13 @@ module.exports = {
     'react-dom': 'ReactDOM'
   },
   plugins: [
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
+    new webpack.DefinePlugin({
+      process: {
+        env: {
+          API_BASE_URL: JSON.stringify('https://api-clean-node.herokuapp.com/api')
+        }
+      }
+    })
   ]
 }
