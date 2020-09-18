@@ -10,5 +10,6 @@ export type PasswordRules = {
 }
 
 export interface PasswordValidator {
-  validate: (password: string, rules?: PasswordRules) => boolean
+  readonly rules?: PasswordRules
+  validate: (password: string) => boolean
 }
