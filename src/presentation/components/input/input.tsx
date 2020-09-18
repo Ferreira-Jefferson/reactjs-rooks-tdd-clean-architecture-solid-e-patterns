@@ -17,8 +17,6 @@ const Input: React.FC<Props> = (props: Props) => {
       ...state,
       [event.target.name]: event.target.value
     })
-  }
-  const handleErrorChange = (event: React.FocusEvent<HTMLInputElement>): void => {
     setErrorState({
       ...errorState,
       [event.target.name]: validation.validate(event.target.name, event.target.value)
@@ -43,7 +41,7 @@ const Input: React.FC<Props> = (props: Props) => {
 
   return (
     <div className={Styles.inputWrap}>
-      <input {...props} data-testid={props.name} onChange={handleChange} onBlur={handleErrorChange}/>
+      <input {...props} data-testid={props.name} onChange={handleChange}/>
       <span data-testid={`${props.name}-status`} title={status.title} className={Styles[`status${status.name}`]}>{status.value}</span>
     </div>
   )
