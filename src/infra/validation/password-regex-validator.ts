@@ -2,35 +2,40 @@ import { PasswordValidator, PasswordRules } from '@/validation/protocols'
 
 export class PasswordRegexValidator implements PasswordValidator {
   private password: string
-  validate (password: string, rules?: PasswordRules): boolean {
-    if (!rules) {
+
+  constructor (
+    readonly rules?: PasswordRules
+  ) {}
+
+  validate (password: string): boolean {
+    if (!this.rules) {
       return true
     }
     this.password = password
     const results = []
-    if (rules.min) {
-      results.push(this.min(rules.min))
+    if (this.rules.min) {
+      results.push(this.min(this.rules.min))
     }
-    if (rules.max) {
-      results.push(this.max(rules.max))
+    if (this.rules.max) {
+      results.push(this.max(this.rules.max))
     }
-    if (rules.upper) {
+    if (this.rules.upper) {
       results.push(this.upper())
     }
-    if (rules.lower) {
+    if (this.rules.lower) {
       results.push(this.lower())
     }
-    if (rules.digits) {
+    if (this.rules.digits) {
       results.push(this.digits())
     }
-    if (rules.space) {
+    if (this.rules.space) {
       results.push(this.space())
     }
-    if (rules.symbols) {
+    if (this.rules.symbols) {
       results.push(this.symbols())
     }
-    if (rules.blackList) {
-      results.push(this.blackList(rules.blackList))
+    if (this.rules.blackList) {
+      results.push(this.blackList(this.rules.blackList))
     }
     return !results.includes(false)
   }
