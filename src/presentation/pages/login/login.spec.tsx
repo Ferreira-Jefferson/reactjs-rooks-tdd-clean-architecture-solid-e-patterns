@@ -187,6 +187,18 @@ describe('Login Component', () => {
       expect(saveSpy).toBeCalledTimes(1)
     })
 
+    it('should present error if SaveAccessToken fails', async () => {
+      const { sut, saveAccessTokenStub } = makeSut()
+      const error = new Error('any_error')
+      jest.spyOn(saveAccessTokenStub, 'save').mockRejectedValueOnce(error)
+      fakeLoginModel(sut)
+      const errorWrap = sut.getByTestId('error-wrap')
+      await waitFor(() => errorWrap)
+      const mainError = sut.getByTestId('main-error')
+      expect(mainError.textContent).toBe(error.message)
+      expect(errorWrap.childElementCount).toBe(1)
+    })
+
     it('should go to main page on success', () => {
       const { sut } = makeSut()
       fakeLoginModel(sut)
