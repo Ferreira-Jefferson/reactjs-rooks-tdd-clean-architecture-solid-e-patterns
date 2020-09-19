@@ -1,0 +1,31 @@
+.inputWrap { 
+  margin-top: 16px;
+  display: flex;
+  position: relative;
+  align-items: center;
+
+input {
+  flex-grow: 1;
+}
+
+.status {  
+  position: absolute;
+  right: 8px;
+  font-weight: 700;
+  cursor: help;  
+  display: none;
+}
+
+.statusFail {
+  @extend .status;  
+  display: block;
+  color: rgb(201, 55, 55)
+}
+
+.statusOk {
+  @extend .status; 
+  display: block;
+  color: rgb(46, 145, 33);
+}
+
+}

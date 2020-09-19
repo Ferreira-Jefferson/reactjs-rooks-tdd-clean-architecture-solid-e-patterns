@@ -1,0 +1,6 @@
+{
+  "hooks": {
+    "pre-commit": "lint-staged",
+    "pre-push": "npx jest --clearCache  && yarn test:ci"
+  }
+}
