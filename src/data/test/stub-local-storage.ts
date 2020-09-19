@@ -1,4 +1,4 @@
-import { SetStorage } from '@/data/protocols/storage/set-storage'
+import { SetStorage } from '@/data/protocols/cache/set-storage'
 
 export const stubSetStorage = (): SetStorage => {
   class SetStorageStub implements SetStorage {

@@ -1,5 +1,5 @@
 import { LocalSaveAccessToken } from './local-save-access-token'
-import { SetStorage } from '@/data/protocols/storage/set-storage'
+import { SetStorage } from '@/data/protocols/cache/set-storage'
 import { stubSetStorage } from '@/data/test/stub-local-storage'
 import faker from 'faker'
 
