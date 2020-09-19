@@ -2,40 +2,44 @@ import React from 'react'
 import { Router } from 'react-router-dom'
 import { createMemoryHistory } from 'history'
 import faker from 'faker'
-import 'jest-localstorage-mock'
 import { render, RenderResult, fireEvent, cleanup, waitFor } from '@testing-library/react'
 import { Validation } from '@/presentation/protocols/validation'
 import { InvalidCredentialsError } from '@/domain/errors'
-import { stubValidation, stubAuthentication, fakeLoginModel, fakeEmail, fakePassword } from '@/presentation/test'
+import { stubValidation, stubAuthentication, fakeLoginModel, fakeEmail, fakePassword, stubSaveAccessToken } from '@/presentation/test'
 import { Authentication } from '@/domain/usecases'
 import Login from './login'
+import { SaveAccessToken } from '@/domain/usecases/save-access-token'
 
 type SutTypes = {
   sut: RenderResult
   validationStub: Validation
   authenticationStub: Authentication
+  saveAccessTokenStub: SaveAccessToken
 }
 
 const history = createMemoryHistory({ initialEntries: ['/login'] })
 const makeSut = (): SutTypes => {
   const validationStub = stubValidation()
   const authenticationStub = stubAuthentication()
+  const saveAccessTokenStub = stubSaveAccessToken()
   const sut = render(
     <Router history={history}>
-      <Login validation={validationStub} authentication={authenticationStub} />
+      <Login
+        validation={validationStub}
+        authentication={authenticationStub}
+        saveAccessToken={saveAccessTokenStub}
+      />
     </Router>
   )
   return {
     sut,
     validationStub,
-    authenticationStub
+    authenticationStub,
+    saveAccessTokenStub
   }
 }
 
 describe('Login Component', () => {
-  beforeEach(() => {
-    localStorage.clear()
-  })
   afterEach(cleanup)
 
   describe('Initial State', () => {
@@ -175,13 +179,12 @@ describe('Login Component', () => {
       expect(errorWrap.childElementCount).toBe(1)
     })
 
-    it('should add accessToken to localStore on success', async () => {
-      const { sut, authenticationStub } = makeSut()
-      const accessToken = 'any_token'
-      jest.spyOn(authenticationStub, 'auth').mockResolvedValueOnce({ accessToken })
+    it('should call SaveAccessToken on success', async () => {
+      const { sut, saveAccessTokenStub } = makeSut()
+      const saveSpy = jest.spyOn(saveAccessTokenStub, 'save')
       fakeLoginModel(sut)
       await waitFor(() => sut.getByTestId('form'))
-      expect(localStorage.setItem).toBeCalledWith('accessToken', accessToken)
+      expect(saveSpy).toBeCalledTimes(1)
     })
 
     it('should go to main page on success', () => {
