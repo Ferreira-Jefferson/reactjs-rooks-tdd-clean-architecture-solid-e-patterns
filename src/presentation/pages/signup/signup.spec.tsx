@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, RenderResult, cleanup, fireEvent } from '@testing-library/react'
+import { render, RenderResult, cleanup } from '@testing-library/react'
 import faker from 'faker'
 import { SignUp } from '@/presentation/pages'
 import { Helper, stubValidation } from '@/presentation/test'
@@ -21,12 +21,6 @@ const makeSut = (): SutTypes => {
     sut,
     validationStub
   }
-}
-
-const fakerField = (sut: RenderResult, fieldName: string, value: string = faker.random.alphaNumeric()): HTMLElement => {
-  const element = sut.getByTestId(fieldName)
-  fireEvent.input(element, { target: { value: value } })
-  return element
 }
 
 describe('SignUp Component', () => {
@@ -76,10 +70,8 @@ describe('SignUp Component', () => {
       const value = faker.random.alphaNumeric()
       const fields = ['name', 'email', 'password', 'passwordConfirmation']
       for (const field of fields) {
-        fakerField(sut, field, value)
-        expect(validateSpy).toBeCalledWith(field, value)
+        Helper.testCalledWith(sut, validateSpy, field, value)
       }
-      expect(validateSpy).toBeCalledTimes(fields.length)
     })
   })
 })

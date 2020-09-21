@@ -1,4 +1,11 @@
-import { RenderResult, waitFor } from '@testing-library/react'
+import { RenderResult, waitFor, fireEvent } from '@testing-library/react'
+import faker from 'faker'
+
+export const fakerField = (sut: RenderResult, fieldName: string, value: string = faker.random.alphaNumeric()): HTMLElement => {
+  const element = sut.getByTestId(fieldName)
+  fireEvent.input(element, { target: { value: value } })
+  return element
+}
 
 export const testChildCount = (sut: RenderResult, fieldTestId: string, count: number): void => {
   const element = sut.getByTestId(fieldTestId)
@@ -32,4 +39,9 @@ export const testWaitTextContent = async (sut: RenderResult, waitFieldTestId: st
   await waitFor(() => waitElement)
   const element = sut.getByTestId(testFieldTestId)
   expect(element.textContent).toBe(content)
+}
+
+export const testCalledWith = (sut: RenderResult, spy: jest.SpyInstance, fieldName: string, value: any = faker.random.alphaNumeric()): void => {
+  fakerField(sut, fieldName, value)
+  expect(spy).toBeCalledWith(fieldName, value)
 }
