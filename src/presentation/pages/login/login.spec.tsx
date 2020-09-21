@@ -75,20 +75,15 @@ describe('Login Component', () => {
       }
     })
 
-    it('should show email error if Validation fails', () => {
+    it('should show message field error if Validation fails', () => {
       const { sut, validationStub } = makeSut()
       const errorMessage = faker.random.words()
-      jest.spyOn(validationStub, 'validate').mockReturnValueOnce(errorMessage)
-      Helper.fakerField(sut, 'email')
-      Helper.testStatusFieldFails(sut, 'email-status', errorMessage)
-    })
-
-    it('should show password error if Validation fails', () => {
-      const { sut, validationStub } = makeSut()
-      const errorMessage = faker.random.words()
-      jest.spyOn(validationStub, 'validate').mockReturnValueOnce(errorMessage)
-      Helper.fakerField(sut, 'password')
-      Helper.testStatusFieldFails(sut, 'password-status', errorMessage)
+      jest.spyOn(validationStub, 'validate').mockReturnValue(errorMessage)
+      const fields = ['email', 'password']
+      for (const field of fields) {
+        Helper.fakerField(sut, field)
+        Helper.testStatusFieldFails(sut, `${field}-status`, errorMessage)
+      }
     })
 
     it('should show valid email state if Validation succeeds', () => {
