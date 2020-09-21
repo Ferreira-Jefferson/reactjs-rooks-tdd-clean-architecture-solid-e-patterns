@@ -7,7 +7,8 @@ const SignUp: React.FC = () => {
   const [errorState] = useState({
     name: 'Campo obrigatório',
     email: 'Campo obrigatório',
-    password: 'Campo obrigatório'
+    password: 'Campo obrigatório',
+    passwordConfirmation: 'Campo obrigatório'
   })
   return (
     <div className={Styles.signup}>
