@@ -73,5 +73,16 @@ describe('SignUp Component', () => {
         Helper.testCalledWith(sut, validateSpy, field, value)
       }
     })
+
+    it('should show message field error if Validation fails', () => {
+      const { sut, validationStub } = makeSut()
+      const errorMessage = faker.random.words()
+      jest.spyOn(validationStub, 'validate').mockReturnValue(errorMessage)
+      const fields = ['name', 'email', 'password', 'passwordConfirmation']
+      for (const field of fields) {
+        Helper.fakerField(sut, field)
+        Helper.testStatusFieldFails(sut, `${field}-status`, errorMessage)
+      }
+    })
   })
 })
