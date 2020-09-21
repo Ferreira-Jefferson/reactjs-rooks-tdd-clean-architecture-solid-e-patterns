@@ -1,4 +1,4 @@
-import { RenderResult } from '@testing-library/react'
+import { RenderResult, waitFor } from '@testing-library/react'
 
 export const testChildCount = (sut: RenderResult, fieldTestId: string, count: number): void => {
   const element = sut.getByTestId(fieldTestId)
@@ -20,4 +20,16 @@ export const testStatusFieldSuccess = (sut: RenderResult, fieldTestId: string): 
   const emailStatus = sut.getByTestId(fieldTestId)
   expect(emailStatus.title).toBe('Campo preenchido corretamente')
   expect(emailStatus.textContent).toBe('✓')
+}
+
+export const testElementExist = (sut: RenderResult, fieldTestId: string): void => {
+  const spinner = sut.getByTestId(fieldTestId)
+  expect(spinner).toBeTruthy()
+}
+
+export const testWaitTextContent = async (sut: RenderResult, waitFieldTestId: string, testFieldTestId: string, content?: string): Promise<void> => {
+  const waitElement = sut.getByTestId(waitFieldTestId)
+  await waitFor(() => waitElement)
+  const element = sut.getByTestId(testFieldTestId)
+  expect(element.textContent).toBe(content)
 }

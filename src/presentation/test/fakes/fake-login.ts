@@ -22,13 +22,11 @@ export const fakeLoginModel = (sut: RenderResult): LoginModel => {
 export const fakeEmail = (sut: RenderResult, email = faker.internet.email()): HTMLInputElement => {
   const emailInput = sut.getByTestId('email') as HTMLInputElement
   fireEvent.input(emailInput, { target: { value: email } })
-  fireEvent.blur(emailInput)
   return emailInput
 }
 
 export const fakePassword = (sut: RenderResult, password = faker.internet.password()): HTMLInputElement => {
   const passwordInput = sut.getByTestId('password') as HTMLInputElement
   fireEvent.input(passwordInput, { target: { value: password } })
-  fireEvent.blur(passwordInput)
   return passwordInput
 }
