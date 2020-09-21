@@ -62,4 +62,10 @@ describe('Signup Component', () => {
     const errorMessage = 'Campo obrigatório'
     testStatusField(sut, 'email-status', errorMessage)
   })
+
+  it('should input password is required', () => {
+    const sut = makeSut()
+    const errorMessage = 'Campo obrigatório'
+    testStatusField(sut, 'password-status', errorMessage)
+  })
 })
