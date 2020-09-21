@@ -84,5 +84,14 @@ describe('SignUp Component', () => {
         Helper.testStatusFieldFails(sut, `${field}-status`, errorMessage)
       }
     })
+
+    it('should show valid field state if Validation succeeds', () => {
+      const { sut } = makeSut()
+      const fields = ['name', 'email', 'password', 'passwordConfirmation']
+      for (const field of fields) {
+        Helper.fakerField(sut, field)
+        Helper.testStatusFieldSuccess(sut, `${field}-status`)
+      }
+    })
   })
 })
