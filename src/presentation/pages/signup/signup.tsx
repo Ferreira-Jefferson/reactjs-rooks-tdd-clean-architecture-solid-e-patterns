@@ -5,7 +5,8 @@ import Context from '@/presentation/contexts/form/form-context'
 
 const SignUp: React.FC = () => {
   const [errorState] = useState({
-    name: 'Campo obrigatório'
+    name: 'Campo obrigatório',
+    email: 'Campo obrigatório'
   })
   return (
     <div className={Styles.signup}>
