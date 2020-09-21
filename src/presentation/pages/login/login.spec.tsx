@@ -92,14 +92,14 @@ describe('Login Component', () => {
         Helper.testStatusFieldSuccess(sut, `${field}-status`)
       }
     })
-  })
 
-  describe('Authentication', () => {
     it('should enable button if form is valid', () => {
       const { sut } = makeSut()
       Helper.testButtonIsDisabled(sut, 'submit', true)
     })
+  })
 
+  describe('Authentication', () => {
     it('should show spinner on submit', () => {
       const { sut } = makeSut()
       fakeLoginModel(sut)
