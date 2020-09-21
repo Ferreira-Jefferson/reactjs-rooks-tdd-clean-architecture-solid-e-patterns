@@ -95,7 +95,11 @@ describe('Login Component', () => {
 
     it('should enable button if form is valid', () => {
       const { sut } = makeSut()
-      Helper.testButtonIsDisabled(sut, 'submit', true)
+      for (const field of fields) {
+        Helper.fakerField(sut, field)
+        Helper.testStatusFieldSuccess(sut, `${field}-status`)
+      }
+      Helper.testButtonIsDisabled(sut, 'submit', false)
     })
   })
 

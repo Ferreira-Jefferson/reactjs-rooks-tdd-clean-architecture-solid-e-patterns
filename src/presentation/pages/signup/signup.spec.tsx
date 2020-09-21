@@ -91,5 +91,14 @@ describe('SignUp Component', () => {
         Helper.testStatusFieldSuccess(sut, `${field}-status`)
       }
     })
+
+    it('should enable button if form is valid', () => {
+      const { sut } = makeSut()
+      for (const field of fields) {
+        Helper.fakerField(sut, field)
+        Helper.testStatusFieldSuccess(sut, `${field}-status`)
+      }
+      Helper.testButtonIsDisabled(sut, 'submit', false)
+    })
   })
 })
