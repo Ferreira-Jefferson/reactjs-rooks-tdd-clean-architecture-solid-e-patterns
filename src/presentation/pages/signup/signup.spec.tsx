@@ -64,11 +64,11 @@ describe('SignUp Component', () => {
   })
 
   describe('Fields Validation', () => {
+    const fields = ['name', 'email', 'password', 'passwordConfirmation']
     it('should call Validation with correct fields', () => {
       const { sut, validationStub } = makeSut()
       const validateSpy = jest.spyOn(validationStub, 'validate')
       const value = faker.random.alphaNumeric()
-      const fields = ['name', 'email', 'password', 'passwordConfirmation']
       for (const field of fields) {
         Helper.testCalledWith(sut, validateSpy, field, value)
       }
@@ -78,7 +78,6 @@ describe('SignUp Component', () => {
       const { sut, validationStub } = makeSut()
       const errorMessage = faker.random.words()
       jest.spyOn(validationStub, 'validate').mockReturnValue(errorMessage)
-      const fields = ['name', 'email', 'password', 'passwordConfirmation']
       for (const field of fields) {
         Helper.fakerField(sut, field)
         Helper.testStatusFieldFails(sut, `${field}-status`, errorMessage)
@@ -87,7 +86,6 @@ describe('SignUp Component', () => {
 
     it('should show valid field state if Validation succeeds', () => {
       const { sut } = makeSut()
-      const fields = ['name', 'email', 'password', 'passwordConfirmation']
       for (const field of fields) {
         Helper.fakerField(sut, field)
         Helper.testStatusFieldSuccess(sut, `${field}-status`)
