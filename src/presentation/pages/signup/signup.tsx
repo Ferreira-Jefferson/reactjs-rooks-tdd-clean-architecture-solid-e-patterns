@@ -19,6 +19,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
     isLoading: false
   })
   const [errorState, setErrorState] = useState({
+    mainError: '',
     name: 'Campo obrigatório',
     email: 'Campo obrigatório',
     password: 'Campo obrigatório',
@@ -27,15 +28,19 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
     const hasError = Object.values(errorState).includes('Campo obrigatório')
-    console.log(hasError)
-    if (!state.isLoading && !hasError) {
-      setState({ ...state, isLoading: true })
-      await addAccount.add({
-        name: state.name,
-        email: state.email,
-        password: state.password,
-        passwordConfirmation: state.passwordConfirmation
-      })
+    try {
+      if (!state.isLoading && !hasError) {
+        setState({ ...state, isLoading: true })
+        await addAccount.add({
+          name: state.name,
+          email: state.email,
+          password: state.password,
+          passwordConfirmation: state.passwordConfirmation
+        })
+      }
+    } catch (error) {
+      setState({ ...state, isLoading: false })
+      setErrorState({ ...errorState, mainError: error.message })
     }
   }
   return (
