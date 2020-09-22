@@ -159,5 +159,14 @@ describe('SignUp Component', () => {
       await waitFor(() => sut.getByTestId('form'))
       expect(saveSpy).toBeCalledTimes(1)
     })
+
+    it('should present error if SaveAccessToken fails', async () => {
+      const { sut, saveAccessTokenStub } = makeSut()
+      const error = new Error('any_error')
+      jest.spyOn(saveAccessTokenStub, 'save').mockRejectedValueOnce(error)
+      fakeSignUpSubmit(sut)
+      await Helper.testWaitTextContent(sut, 'error-wrap', 'main-error', error.message)
+      Helper.testChildCount(sut, 'error-wrap', 1)
+    })
   })
 })
