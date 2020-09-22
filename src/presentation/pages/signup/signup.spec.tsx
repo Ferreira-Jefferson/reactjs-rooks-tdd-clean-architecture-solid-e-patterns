@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, RenderResult, cleanup } from '@testing-library/react'
+import { render, RenderResult, cleanup, fireEvent } from '@testing-library/react'
 import faker from 'faker'
 import { SignUp } from '@/presentation/pages'
 import { Helper, stubValidation } from '@/presentation/test'
@@ -25,6 +25,7 @@ const makeSut = (): SutTypes => {
 
 describe('SignUp Component', () => {
   afterEach(cleanup)
+  const fields = ['name', 'email', 'password', 'passwordConfirmation']
 
   describe('Initial State', () => {
     it('should not render spinner and error on start', () => {
@@ -64,7 +65,6 @@ describe('SignUp Component', () => {
   })
 
   describe('Fields Validation', () => {
-    const fields = ['name', 'email', 'password', 'passwordConfirmation']
     it('should call Validation with correct fields', () => {
       const { sut, validationStub } = makeSut()
       const validateSpy = jest.spyOn(validationStub, 'validate')
@@ -99,6 +99,19 @@ describe('SignUp Component', () => {
         Helper.testStatusFieldSuccess(sut, `${field}-status`)
       }
       Helper.testButtonIsDisabled(sut, 'submit', false)
+    })
+  })
+
+  describe('AddAccount', () => {
+    it('should show spinner on submit', () => {
+      const { sut } = makeSut()
+      for (const field of fields) {
+        Helper.fakerField(sut, field)
+        Helper.testStatusFieldSuccess(sut, `${field}-status`)
+      }
+      const submitButton = sut.getByTestId('submit') as HTMLButtonElement
+      fireEvent.click(submitButton)
+      Helper.testElementExist(sut, 'spinner')
     })
   })
 })
