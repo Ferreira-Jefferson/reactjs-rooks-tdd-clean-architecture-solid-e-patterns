@@ -1,31 +1,35 @@
 import React from 'react'
-import { render, RenderResult, cleanup, fireEvent } from '@testing-library/react'
 import faker from 'faker'
 import { SignUp } from '@/presentation/pages'
-import { Helper, stubValidation, fakeSignUpSubmit, stubAddAccount } from '@/presentation/test'
+import { render, RenderResult, cleanup, fireEvent, waitFor } from '@testing-library/react'
+import { Helper, stubValidation, fakeSignUpSubmit, stubAddAccount, stubSaveAccessToken } from '@/presentation/test'
 import { Validation } from '@/presentation/protocols/validation'
-import { AddAccount } from '@/domain/usecases'
+import { AddAccount, SaveAccessToken } from '@/domain/usecases'
 import { EmailInUseError } from '@/domain/errors'
 
 type SutTypes = {
   sut: RenderResult
   validationStub: Validation
   addAccountStub: AddAccount
+  saveAccessTokenStub: SaveAccessToken
 }
 
 const makeSut = (): SutTypes => {
   const addAccountStub = stubAddAccount()
   const validationStub = stubValidation()
+  const saveAccessTokenStub = stubSaveAccessToken()
   const sut = render(
     <SignUp
       validation={validationStub}
       addAccount={addAccountStub}
+      saveAccessToken={saveAccessTokenStub}
     />
   )
   return {
     sut,
     validationStub,
-    addAccountStub
+    addAccountStub,
+    saveAccessTokenStub
   }
 }
 
@@ -146,6 +150,14 @@ describe('SignUp Component', () => {
       fakeSignUpSubmit(sut)
       await Helper.testWaitTextContent(sut, 'error-wrap', 'main-error', error.message)
       Helper.testChildCount(sut, 'error-wrap', 1)
+    })
+
+    it('should call SaveAccessToken on success', async () => {
+      const { sut, saveAccessTokenStub } = makeSut()
+      const saveSpy = jest.spyOn(saveAccessTokenStub, 'save')
+      fakeSignUpSubmit(sut)
+      await waitFor(() => sut.getByTestId('form'))
+      expect(saveSpy).toBeCalledTimes(1)
     })
   })
 })
