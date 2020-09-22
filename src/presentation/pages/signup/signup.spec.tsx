@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, RenderResult, cleanup, fireEvent } from '@testing-library/react'
+import { render, RenderResult, cleanup } from '@testing-library/react'
 import faker from 'faker'
 import { SignUp } from '@/presentation/pages'
 import { Helper, stubValidation, fakeSignUpSubmit, stubAddAccount } from '@/presentation/test'
@@ -99,10 +99,7 @@ describe('SignUp Component', () => {
 
     it('should enable button if form is valid', () => {
       const { sut } = makeSut()
-      for (const field of fields) {
-        Helper.fakerField(sut, field)
-        Helper.testStatusFieldSuccess(sut, `${field}-status`)
-      }
+      fakeSignUpSubmit(sut)
       Helper.testButtonIsDisabled(sut, 'submit', false)
     })
   })
@@ -110,12 +107,7 @@ describe('SignUp Component', () => {
   describe('AddAccount', () => {
     it('should show spinner on submit', () => {
       const { sut } = makeSut()
-      for (const field of fields) {
-        Helper.fakerField(sut, field)
-        Helper.testStatusFieldSuccess(sut, `${field}-status`)
-      }
-      const submitButton = sut.getByTestId('submit') as HTMLButtonElement
-      fireEvent.click(submitButton)
+      fakeSignUpSubmit(sut)
       Helper.testElementExist(sut, 'spinner')
     })
 

@@ -4,20 +4,18 @@ import { Helper } from '@/presentation/test'
 import faker from 'faker'
 
 export const fakeSignUpSubmit = (sut: RenderResult): AddAccountParams => {
-  const name = faker.name.findName()
-  const email = faker.internet.email()
-  const password = faker.internet.password()
-  const passwordConfirmation = password
-  Helper.fakerField(sut, 'name', name)
-  Helper.fakerField(sut, 'email', email)
-  Helper.fakerField(sut, 'password', password)
-  Helper.fakerField(sut, 'passwordConfirmation', passwordConfirmation)
+  const defaultPassword = faker.internet.password()
+  const account: AddAccountParams = ({
+    name: faker.name.findName(),
+    email: faker.internet.email(),
+    password: defaultPassword,
+    passwordConfirmation: defaultPassword
+  })
+  Object.entries(account).forEach(([field, value]) => {
+    Helper.fakerField(sut, field, value)
+    Helper.testStatusFieldSuccess(sut, `${field}-status`)
+  })
   const submitButton = sut.getByTestId('submit') as HTMLButtonElement
   fireEvent.click(submitButton)
-  return {
-    name,
-    email,
-    password,
-    passwordConfirmation
-  }
+  return account
 }
