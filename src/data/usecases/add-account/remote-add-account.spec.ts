@@ -2,7 +2,7 @@ import { RemoteAddAccount } from '@/data/usecases/add-account/remote-add-account
 import { AddAccountParams } from '@/domain/usecases'
 import { HttpPostClientStub } from '@/data/test'
 import { AccountModel } from '@/domain/models'
-import { fakeAddAccountParams } from '@/domain/test'
+import { fakeAddAccountParams, fakeAccountModel } from '@/domain/test'
 import { HttpStatusCode } from '@/data/protocols/http/http-response'
 import { EmailInUseError, UnexpectedError } from '@/domain/errors'
 import faker from 'faker'
@@ -71,5 +71,16 @@ describe('RemoteAddAccount', () => {
     }
     const promise = sut.add(fakeAddAccountParams())
     await expect(promise).rejects.toThrowError(new UnexpectedError())
+  })
+
+  it('should returns an AccountModel if HttpPostClient returns 200', async () => {
+    const { sut, httpPostClientStub } = makeSut()
+    const httpResult = fakeAccountModel()
+    httpPostClientStub.response = {
+      statusCode: HttpStatusCode.ok,
+      body: httpResult
+    }
+    const account = await sut.add(fakeAddAccountParams())
+    expect(account).toEqual(httpResult)
   })
 })
