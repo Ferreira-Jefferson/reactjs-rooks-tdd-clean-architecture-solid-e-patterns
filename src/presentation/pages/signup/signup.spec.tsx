@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, RenderResult, cleanup } from '@testing-library/react'
+import { render, RenderResult, cleanup, fireEvent } from '@testing-library/react'
 import faker from 'faker'
 import { SignUp } from '@/presentation/pages'
 import { Helper, stubValidation, fakeSignUpSubmit, stubAddAccount } from '@/presentation/test'
@@ -129,6 +129,13 @@ describe('SignUp Component', () => {
       fakeSignUpSubmit(sut)
       fakeSignUpSubmit(sut)
       expect(addSpy).toBeCalledTimes(1)
+    })
+
+    it('should not call AddAccount if form is invalid', () => {
+      const { sut, addAccountStub } = makeSut()
+      const addSpy = jest.spyOn(addAccountStub, 'add')
+      fireEvent.submit(sut.getByTestId('form'))
+      expect(addSpy).toBeCalledTimes(0)
     })
   })
 })
