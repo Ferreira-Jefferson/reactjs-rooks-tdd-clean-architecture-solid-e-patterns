@@ -122,5 +122,13 @@ describe('SignUp Component', () => {
         passwordConfirmation
       })
     })
+
+    it('should call AddAccount only once', () => {
+      const { sut, addAccountStub } = makeSut()
+      const addSpy = jest.spyOn(addAccountStub, 'add')
+      fakeSignUpSubmit(sut)
+      fakeSignUpSubmit(sut)
+      expect(addSpy).toBeCalledTimes(1)
+    })
   })
 })
