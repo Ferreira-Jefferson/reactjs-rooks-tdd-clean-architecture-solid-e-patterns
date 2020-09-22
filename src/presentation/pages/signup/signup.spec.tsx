@@ -1,4 +1,6 @@
 import React from 'react'
+import { Router } from 'react-router-dom'
+import { createMemoryHistory } from 'history'
 import faker from 'faker'
 import { SignUp } from '@/presentation/pages'
 import { render, RenderResult, cleanup, fireEvent, waitFor } from '@testing-library/react'
@@ -14,16 +16,19 @@ type SutTypes = {
   saveAccessTokenStub: SaveAccessToken
 }
 
+const history = createMemoryHistory({ initialEntries: ['/signup'] })
 const makeSut = (): SutTypes => {
   const addAccountStub = stubAddAccount()
   const validationStub = stubValidation()
   const saveAccessTokenStub = stubSaveAccessToken()
   const sut = render(
-    <SignUp
-      validation={validationStub}
-      addAccount={addAccountStub}
-      saveAccessToken={saveAccessTokenStub}
-    />
+    <Router history={history}>
+      <SignUp
+        validation={validationStub}
+        addAccount={addAccountStub}
+        saveAccessToken={saveAccessTokenStub}
+      />
+    </Router>
   )
   return {
     sut,
@@ -167,6 +172,13 @@ describe('SignUp Component', () => {
       fakeSignUpSubmit(sut)
       await Helper.testWaitTextContent(sut, 'error-wrap', 'main-error', error.message)
       Helper.testChildCount(sut, 'error-wrap', 1)
+    })
+
+    it('should go to main page on success', () => {
+      const { sut } = makeSut()
+      fakeSignUpSubmit(sut)
+      expect(history.length).toBe(1)
+      expect(history.location.pathname).toBe('/')
     })
   })
 })
