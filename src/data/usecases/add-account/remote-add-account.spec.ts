@@ -4,8 +4,8 @@ import { HttpPostClientStub } from '@/data/test'
 import { AccountModel } from '@/domain/models'
 import { fakeAddAccountParams } from '@/domain/test'
 import { HttpStatusCode } from '@/data/protocols/http/http-response'
+import { EmailInUseError, UnexpectedError } from '@/domain/errors'
 import faker from 'faker'
-import { EmailInUseError } from '@/domain/errors'
 
 type SutTypes = {
   sut: RemoteAddAccount
@@ -44,5 +44,14 @@ describe('RemoteAddAccount', () => {
     }
     const promise = sut.add(fakeAddAccountParams())
     await expect(promise).rejects.toThrowError(new EmailInUseError())
+  })
+
+  it('should throw UnexpectedError if HttpPostClient returns 400', async () => {
+    const { sut, httpPostClientStub } = makeSut()
+    httpPostClientStub.response = {
+      statusCode: HttpStatusCode.badRequest
+    }
+    const promise = sut.add(fakeAddAccountParams())
+    await expect(promise).rejects.toThrowError(new UnexpectedError())
   })
 })
