@@ -5,6 +5,7 @@ import { SignUp } from '@/presentation/pages'
 import { Helper, stubValidation, fakeSignUpSubmit, stubAddAccount } from '@/presentation/test'
 import { Validation } from '@/presentation/protocols/validation'
 import { AddAccount } from '@/domain/usecases'
+import { EmailInUseError } from '@/domain/errors'
 
 type SutTypes = {
   sut: RenderResult
@@ -136,6 +137,15 @@ describe('SignUp Component', () => {
       const addSpy = jest.spyOn(addAccountStub, 'add')
       fireEvent.submit(sut.getByTestId('form'))
       expect(addSpy).toBeCalledTimes(0)
+    })
+
+    it('should present error if AddAccount fails', async () => {
+      const { sut, addAccountStub } = makeSut()
+      const error = new EmailInUseError()
+      jest.spyOn(addAccountStub, 'add').mockRejectedValueOnce(error)
+      fakeSignUpSubmit(sut)
+      await Helper.testWaitTextContent(sut, 'error-wrap', 'main-error', error.message)
+      Helper.testChildCount(sut, 'error-wrap', 1)
     })
   })
 })
