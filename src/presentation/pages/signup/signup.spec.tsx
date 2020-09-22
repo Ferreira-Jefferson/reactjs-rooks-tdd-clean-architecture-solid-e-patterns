@@ -2,24 +2,29 @@ import React from 'react'
 import { render, RenderResult, cleanup, fireEvent } from '@testing-library/react'
 import faker from 'faker'
 import { SignUp } from '@/presentation/pages'
-import { Helper, stubValidation } from '@/presentation/test'
+import { Helper, stubValidation, fakeSignUpSubmit, stubAddAccount } from '@/presentation/test'
 import { Validation } from '@/presentation/protocols/validation'
+import { AddAccount } from '@/domain/usecases'
 
 type SutTypes = {
   sut: RenderResult
   validationStub: Validation
+  addAccountStub: AddAccount
 }
 
 const makeSut = (): SutTypes => {
+  const addAccountStub = stubAddAccount()
   const validationStub = stubValidation()
   const sut = render(
     <SignUp
       validation={validationStub}
+      addAccount={addAccountStub}
     />
   )
   return {
     sut,
-    validationStub
+    validationStub,
+    addAccountStub
   }
 }
 
@@ -112,6 +117,18 @@ describe('SignUp Component', () => {
       const submitButton = sut.getByTestId('submit') as HTMLButtonElement
       fireEvent.click(submitButton)
       Helper.testElementExist(sut, 'spinner')
+    })
+
+    it('should call AddAccount with correct values', () => {
+      const { sut, addAccountStub } = makeSut()
+      const addSpy = jest.spyOn(addAccountStub, 'add')
+      const { name, email, password, passwordConfirmation } = fakeSignUpSubmit(sut)
+      expect(addSpy).toBeCalledWith({
+        name,
+        email,
+        password,
+        passwordConfirmation
+      })
     })
   })
 })
