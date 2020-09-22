@@ -3,7 +3,9 @@ import { AddAccountParams } from '@/domain/usecases'
 import { HttpPostClientStub } from '@/data/test'
 import { AccountModel } from '@/domain/models'
 import { fakeAddAccountParams } from '@/domain/test'
+import { HttpStatusCode } from '@/data/protocols/http/http-response'
 import faker from 'faker'
+import { EmailInUseError } from '@/domain/errors'
 
 type SutTypes = {
   sut: RemoteAddAccount
@@ -33,5 +35,14 @@ describe('RemoteAddAccount', () => {
     const accountParams = fakeAddAccountParams()
     await sut.add(accountParams)
     expect(httpPostClientStub.body).toEqual(accountParams)
+  })
+
+  it('should throw EmailInUseError if HttpPostClient returns 403', async () => {
+    const { sut, httpPostClientStub } = makeSut()
+    httpPostClientStub.response = {
+      statusCode: HttpStatusCode.forbidden
+    }
+    const promise = sut.add(fakeAddAccountParams())
+    await expect(promise).rejects.toThrowError(new EmailInUseError())
   })
 })
