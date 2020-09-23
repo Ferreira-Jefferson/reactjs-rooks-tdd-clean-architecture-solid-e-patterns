@@ -12,7 +12,7 @@ const Input: React.FC<Props> = (props: Props) => {
   })
   const { state, errorState, setState, setErrorState, validation } = useContext(Context)
   const messageState = errorState[props.name]
-  const handleChange = (event: React.FocusEvent<HTMLInputElement>): void => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setState({
       ...state,
       [event.target.name]: event.target.value
