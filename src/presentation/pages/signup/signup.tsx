@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useHistory, Link } from 'react-router-dom'
 import Styles from './signup-styles.scss'
-import { HeaderSignUp, Footer, Input, FormStatus } from '@/presentation/components'
+import { HeaderSignUp, Footer, Input, FormStatus, SubmitButton } from '@/presentation/components'
 import Context from '@/presentation/contexts/form/form-context'
 import { Validation } from '@/presentation/protocols/validation'
 import { AddAccount, SaveAccessToken } from '@/domain/usecases'
@@ -19,7 +19,8 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Pr
     email: '',
     password: '',
     passwordConfirmation: '',
-    isLoading: false
+    isLoading: false,
+    isFormInvalid: true
   })
   const [errorState, setErrorState] = useState({
     mainError: '',
@@ -30,9 +31,8 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Pr
   })
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
-    const hasError = Object.values(errorState).includes('Campo obrigatório')
     try {
-      if (!state.isLoading && !hasError) {
+      if (!state.isLoading && !state.isFormInvalid) {
         setState({ ...state, isLoading: true })
         const account = await addAccount.add({
           name: state.name,
@@ -58,7 +58,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Pr
           <Input type="email" name="email" placeholder="Digite seu e-mail" />
           <Input type="password" name="password" placeholder="Digite sua senha" />
           <Input type="password" name="passwordConfirmation" placeholder="Repita sua senha" />
-          <button data-testid="submit" disabled={!!errorState.name || !!errorState.email || !!errorState.password || !!errorState.passwordConfirmation} className={Styles.submit} type="submit">Entrar</button>
+          <SubmitButton disabled={!!state.isFormInvalid} value="Cadastrar" />
           <Link data-testid="toLogin" replace to="/login" className={Styles.link}>Voltar</Link>
           <FormStatus />
         </form>

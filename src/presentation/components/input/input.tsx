@@ -37,6 +37,10 @@ const Input: React.FC<Props> = (props: Props) => {
         title: 'Campo preenchido corretamente'
       })
     }
+    setState({
+      ...state,
+      isFormInvalid: Object.values(errorState).find(value => /(obrigat.rio|inv.lido)/gi.test(value as string))
+    })
   }, [messageState])
 
   return (
