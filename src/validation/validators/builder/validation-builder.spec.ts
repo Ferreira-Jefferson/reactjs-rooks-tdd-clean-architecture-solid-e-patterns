@@ -1,4 +1,4 @@
-import { ValidationBuilder as sut, RequiredFieldValidation, EmailValidation, PasswordValidation } from '@/validation/validators'
+import { ValidationBuilder as sut, RequiredFieldValidation, EmailValidation, PasswordValidation, CompareFieldsValidation } from '@/validation/validators'
 import { mockEmailRegexValidator, stubPasswordRegexValidator } from '@/validation/test'
 import faker from 'faker'
 
@@ -13,6 +13,13 @@ describe('ValidationBuilder', () => {
     const field = faker.database.column()
     const validations = sut.field(field).email(mockEmailRegexValidator()).build()
     expect(validations).toEqual([new EmailValidation(mockEmailRegexValidator(), field)])
+  })
+
+  it('should return CompareFieldsValidation', () => {
+    const field = faker.database.column()
+    const fieldToCompare = faker.database.column()
+    const validations = sut.field(field).sameAs(fieldToCompare).build()
+    expect(validations).toEqual([new CompareFieldsValidation(field, fieldToCompare)])
   })
 
   it('should return PasswordValidation', () => {

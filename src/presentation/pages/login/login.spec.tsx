@@ -66,13 +66,12 @@ describe('Login Component', () => {
 
   describe('Fields Validation', () => {
     const fields = ['email', 'password']
-    it('should call Validation with correct fields', () => {
+    it('should call Validation with correct values', () => {
       const { sut, validationStub } = makeSut()
       const validateSpy = jest.spyOn(validationStub, 'validate')
-      const value = faker.random.alphaNumeric()
-      for (const field of fields) {
-        Helper.testCalledWith(sut, validateSpy, field, value)
-      }
+      Helper.fakerField(sut, 'email')
+      Helper.fakerField(sut, 'password')
+      expect(validateSpy).toBeCalledTimes(2)
     })
 
     it('should show message field error if Validation fails', () => {

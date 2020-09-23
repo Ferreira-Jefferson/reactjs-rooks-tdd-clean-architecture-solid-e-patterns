@@ -17,9 +17,11 @@ const Input: React.FC<Props> = (props: Props) => {
       ...state,
       [event.target.name]: event.target.value
     })
+    const { email, password, name, passwordConfirmation } = state
+    const formData = { email, password, name, passwordConfirmation }
     setErrorState({
       ...errorState,
-      [event.target.name]: validation.validate(event.target.name, event.target.value)
+      [event.target.name]: validation.validate(event.target.name, formData)
     })
   }
 
