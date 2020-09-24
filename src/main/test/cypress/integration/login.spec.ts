@@ -62,4 +62,18 @@ describe('Login', () => {
       .should('have.attr', 'disabled')
     cy.getByTestId('error-wrap').should('not.have.descendants')
   })
+
+  it('should present valid state if form is valid', () => {
+    cy.getByTestId('email').type(faker.internet.email())
+    cy.getByTestId('email-status')
+      .should('have.attr', 'title', 'Campo preenchido corretamente')
+      .should('contain.text', '✓')
+    cy.getByTestId('password').type(faker.internet.password(10, false, '', '@2Aa'))
+    cy.getByTestId('password-status')
+      .should('have.attr', 'title', 'Campo preenchido corretamente')
+      .should('contain.text', '✓')
+    cy.getByTestId('submit')
+      .should('not.have.attr', 'disabled')
+    cy.getByTestId('error-wrap').should('not.have.descendants')
+  })
 })
