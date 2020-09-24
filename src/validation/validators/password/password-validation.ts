@@ -9,7 +9,7 @@ export class PasswordValidation implements FieldValidation {
     readonly field: string
   ) { }
 
-  validate (value: string): Error {
-    return this.passwordValidator.validate(value) ? null : new InvalidFieldError(this.field)
+  validate (input: Record<string, any>): Error {
+    return this.passwordValidator.validate(input[this.field]) ? null : new InvalidFieldError(this.field)
   }
 }

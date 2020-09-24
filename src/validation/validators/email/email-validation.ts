@@ -8,11 +8,11 @@ export class EmailValidation implements FieldValidation {
     readonly field: string
   ) { }
 
-  validate (value: string): Error {
-    if (!value.trim()) {
+  validate (input: Record<string, any>): Error {
+    if (!input[this.field]?.trim()) {
       return null
     }
-    const isValid = this.emailValidator.validate(value)
+    const isValid = this.emailValidator.validate(input[this.field])
     return isValid ? null : new InvalidFieldError(this.field)
   }
 }

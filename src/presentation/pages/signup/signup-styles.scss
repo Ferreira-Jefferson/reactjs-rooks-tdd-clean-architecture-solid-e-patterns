@@ -1,6 +1,6 @@
 @import "../../styles/colors.scss";
 
-.login {
+.signup {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -26,7 +26,7 @@
     button[type="submit"] {
       margin-top: 32px;
     }
-
+  
     .link {
       text-align: center;
       color: $primary;

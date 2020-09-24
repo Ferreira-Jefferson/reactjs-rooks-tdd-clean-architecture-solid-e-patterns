@@ -12,14 +12,16 @@ const Input: React.FC<Props> = (props: Props) => {
   })
   const { state, errorState, setState, setErrorState, validation } = useContext(Context)
   const messageState = errorState[props.name]
-  const handleChange = (event: React.FocusEvent<HTMLInputElement>): void => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setState({
       ...state,
       [event.target.name]: event.target.value
     })
+    const { email, password, name, passwordConfirmation } = state
+    const formData = { email, password, name, passwordConfirmation }
     setErrorState({
       ...errorState,
-      [event.target.name]: validation.validate(event.target.name, event.target.value)
+      [event.target.name]: validation.validate(event.target.name, formData)
     })
   }
 
@@ -37,6 +39,10 @@ const Input: React.FC<Props> = (props: Props) => {
         title: 'Campo preenchido corretamente'
       })
     }
+    setState({
+      ...state,
+      isFormInvalid: Object.values(errorState).find(value => /(obrigat.rio|inv.lido)/gi.test(value as string))
+    })
   }, [messageState])
 
   return (

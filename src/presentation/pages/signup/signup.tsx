@@ -1,38 +1,44 @@
 import React, { useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
-import Styles from './login-styles.scss'
-import { HeaderLogin, Footer, Input, FormStatus, SubmitButton } from '@/presentation/components'
+import { useHistory, Link } from 'react-router-dom'
+import Styles from './signup-styles.scss'
+import { HeaderSignUp, Footer, Input, FormStatus, SubmitButton } from '@/presentation/components'
 import Context from '@/presentation/contexts/form/form-context'
 import { Validation } from '@/presentation/protocols/validation'
-import { Authentication, SaveAccessToken } from '@/domain/usecases'
+import { AddAccount, SaveAccessToken } from '@/domain/usecases'
 
 type Props = {
   validation: Validation
-  authentication: Authentication
+  addAccount: AddAccount
   saveAccessToken: SaveAccessToken
 }
 
-const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }: Props) => {
+const SignUp: React.FC<Props> = ({ validation, addAccount, saveAccessToken }: Props) => {
   const history = useHistory()
   const [state, setState] = useState({
-    isLoading: false,
+    name: '',
     email: '',
     password: '',
+    passwordConfirmation: '',
+    isLoading: false,
     isFormInvalid: true
   })
   const [errorState, setErrorState] = useState({
     mainError: '',
+    name: 'Campo obrigatório',
     email: 'Campo obrigatório',
-    password: 'Campo obrigatório'
+    password: 'Campo obrigatório',
+    passwordConfirmation: 'Campo obrigatório'
   })
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
     try {
       if (!state.isLoading && !state.isFormInvalid) {
         setState({ ...state, isLoading: true })
-        const account = await authentication.auth({
+        const account = await addAccount.add({
+          name: state.name,
           email: state.email,
-          password: state.password
+          password: state.password,
+          passwordConfirmation: state.passwordConfirmation
         })
         await saveAccessToken.save(account.accessToken)
         history.replace('/')
@@ -42,17 +48,18 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
       setErrorState({ ...errorState, mainError: error.message })
     }
   }
-
   return (
-    <div className={Styles.login}>
-      <HeaderLogin />
+    <div className={Styles.signup}>
+      <HeaderSignUp/>
       <Context.Provider value={{ state, setState, errorState, setErrorState, validation }}>
-        <form data-testid="form" className={Styles.form} onSubmit={handleSubmit}>
-          <h2>Login</h2>
+        <form data-testid='form' className={Styles.form} onSubmit={handleSubmit}>
+          <h2>Criar Conta</h2>
+          <Input type="text" name="name" placeholder="Digite seu nome" />
           <Input type="email" name="email" placeholder="Digite seu e-mail" />
           <Input type="password" name="password" placeholder="Digite sua senha" />
-          <SubmitButton disabled={!!state.isFormInvalid} value="Entrar" />
-          <Link data-testid="toSignup" to="/signup" className={Styles.link}>Criar conta</Link>
+          <Input type="password" name="passwordConfirmation" placeholder="Repita sua senha" />
+          <SubmitButton disabled={!!state.isFormInvalid} value="Cadastrar" />
+          <Link data-testid="toLogin" replace to="/login" className={Styles.link}>Voltar</Link>
           <FormStatus />
         </form>
       </Context.Provider>
@@ -61,4 +68,4 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
   )
 }
 
-export default Login
+export default SignUp

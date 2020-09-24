@@ -23,20 +23,20 @@ describe('PasswordValidation', () => {
     const { sut, passwordRegexValidatorStub } = makeSut()
     const validateSpy = jest.spyOn(passwordRegexValidatorStub, 'validate')
     const password = faker.internet.password()
-    sut.validate(password)
+    sut.validate({ password })
     expect(validateSpy).toBeCalledWith(password)
   })
 
   it('should return an error if password is invalid', () => {
     const { sut, passwordRegexValidatorStub } = makeSut()
     jest.spyOn(passwordRegexValidatorStub, 'validate').mockReturnValue(false)
-    const error = sut.validate('invalid_password')
+    const error = sut.validate({ password: 'invalid_password' })
     expect(error).toEqual(new InvalidFieldError('password'))
   })
 
   it('should return falsy if password is valid', () => {
     const { sut } = makeSut()
-    const error = sut.validate(faker.internet.password())
+    const error = sut.validate({ password: faker.internet.password() })
     expect(error).toBeFalsy()
   })
 })
