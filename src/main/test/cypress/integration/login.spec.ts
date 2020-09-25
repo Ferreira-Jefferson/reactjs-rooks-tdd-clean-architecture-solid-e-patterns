@@ -122,6 +122,22 @@ describe('Login', () => {
     cy.url().should('eq', `${baseUrl}/login`)
   })
 
+  it('should present UnexpectedError if invalid data is returned', () => {
+    cy.route({
+      method: 'POST',
+      url: /login/,
+      status: 200,
+      response: {
+        invalidProperty: faker.random.uuid()
+      }
+    })
+    cy.getByTestId('email').type('any_email@mail.com')
+    cy.getByTestId('password').type('any_password')
+    cy.getByTestId('submit').click()
+    cy.getByTestId('error-wrap').should('not.have.descendants')
+    cy.getByTestId('main-error').should('contain.text', 'Algum erro ocorreu. Verifique sua conexão e tente novamente.')
+  })
+
   it('should save accessToken if valid credentials are provided', () => {
     cy.route({
       method: 'POST',
