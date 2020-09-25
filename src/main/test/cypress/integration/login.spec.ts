@@ -9,12 +9,10 @@ describe('Login', () => {
   })
 
   it('should load with correct initial state', () => {
-    cy.getByTestId('email-status')
+    cy.getByTestId('email')
       .should('have.attr', 'title', 'Campo obrigatório')
-      .should('contain.text', '✗')
-    cy.getByTestId('password-status')
+    cy.getByTestId('password')
       .should('have.attr', 'title', 'Campo obrigatório')
-      .should('contain.text', '✗')
     cy.getByTestId('submit')
       .should('contain.text', 'Entrar')
       .should('have.attr', 'disabled')
@@ -26,13 +24,11 @@ describe('Login', () => {
 
   it('should present error state if form is invalid', () => {
     cy.getByTestId('email').type(faker.random.word())
-    cy.getByTestId('email-status')
+    cy.getByTestId('email')
       .should('have.attr', 'title', 'Campo email inválido')
-      .should('contain.text', '✗')
     cy.getByTestId('password').type(faker.random.alphaNumeric(3))
-    cy.getByTestId('password-status')
+    cy.getByTestId('password')
       .should('have.attr', 'title', 'Campo password inválido')
-      .should('contain.text', '✗')
     cy.getByTestId('submit')
       .should('have.attr', 'disabled')
     cy.getByTestId('error-wrap').should('not.have.descendants')
@@ -40,13 +36,10 @@ describe('Login', () => {
 
   it('should present error state if only email field is valid', () => {
     cy.getByTestId('email').type(faker.internet.email())
-    cy.getByTestId('email-status')
-      .should('have.attr', 'title', 'Campo preenchido corretamente')
-      .should('contain.text', '✓')
+    cy.getByTestId('email')
     cy.getByTestId('password').type(faker.random.alphaNumeric(3))
-    cy.getByTestId('password-status')
+    cy.getByTestId('password')
       .should('have.attr', 'title', 'Campo password inválido')
-      .should('contain.text', '✗')
     cy.getByTestId('submit')
       .should('have.attr', 'disabled')
     cy.getByTestId('error-wrap').should('not.have.descendants')
@@ -54,13 +47,9 @@ describe('Login', () => {
 
   it('should present error state if only password field is valid', () => {
     cy.getByTestId('email').type(faker.random.word())
-    cy.getByTestId('email-status')
+    cy.getByTestId('email')
       .should('have.attr', 'title', 'Campo email inválido')
-      .should('contain.text', '✗')
     cy.getByTestId('password').type(faker.internet.password(10, false, '', '@2Aa'))
-    cy.getByTestId('password-status')
-      .should('have.attr', 'title', 'Campo preenchido corretamente')
-      .should('contain.text', '✓')
     cy.getByTestId('submit')
       .should('have.attr', 'disabled')
     cy.getByTestId('error-wrap').should('not.have.descendants')
@@ -68,13 +57,8 @@ describe('Login', () => {
 
   it('should present valid state if form is valid', () => {
     cy.getByTestId('email').type(faker.internet.email())
-    cy.getByTestId('email-status')
-      .should('have.attr', 'title', 'Campo preenchido corretamente')
-      .should('contain.text', '✓')
+    cy.getByTestId('email')
     cy.getByTestId('password').type(faker.internet.password(10, false, '', '@2Aa'))
-    cy.getByTestId('password-status')
-      .should('have.attr', 'title', 'Campo preenchido corretamente')
-      .should('contain.text', '✓')
     cy.getByTestId('submit')
       .should('not.have.attr', 'disabled')
     cy.getByTestId('error-wrap').should('not.have.descendants')

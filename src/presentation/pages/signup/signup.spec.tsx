@@ -57,25 +57,25 @@ describe('SignUp Component', () => {
     it('should input name is required', () => {
       const { sut } = makeSut()
       const errorMessage = 'Campo obrigatório'
-      Helper.testStatusFieldFails(sut, 'name-status', errorMessage)
+      Helper.testStatusFieldFails(sut, 'name', errorMessage)
     })
 
     it('should input email is required', () => {
       const { sut } = makeSut()
       const errorMessage = 'Campo obrigatório'
-      Helper.testStatusFieldFails(sut, 'email-status', errorMessage)
+      Helper.testStatusFieldFails(sut, 'email', errorMessage)
     })
 
     it('should input password is required', () => {
       const { sut } = makeSut()
       const errorMessage = 'Campo obrigatório'
-      Helper.testStatusFieldFails(sut, 'password-status', errorMessage)
+      Helper.testStatusFieldFails(sut, 'password', errorMessage)
     })
 
     it('should input passwordConfirmation is required', () => {
       const { sut } = makeSut()
       const errorMessage = 'Campo obrigatório'
-      Helper.testStatusFieldFails(sut, 'passwordConfirmation-status', errorMessage)
+      Helper.testStatusFieldFails(sut, 'passwordConfirmation', errorMessage)
     })
   })
 
@@ -96,7 +96,7 @@ describe('SignUp Component', () => {
       jest.spyOn(validationStub, 'validate').mockReturnValue(errorMessage)
       for (const field of fields) {
         Helper.fakerField(sut, field)
-        Helper.testStatusFieldFails(sut, `${field}-status`, errorMessage)
+        Helper.testStatusFieldFails(sut, field, errorMessage)
       }
     })
 
@@ -104,7 +104,7 @@ describe('SignUp Component', () => {
       const { sut } = makeSut()
       for (const field of fields) {
         Helper.fakerField(sut, field)
-        Helper.testStatusFieldSuccess(sut, `${field}-status`)
+        Helper.testStatusFieldSuccess(sut, field)
       }
     })
 

@@ -18,15 +18,14 @@ export const testButtonIsDisabled = (sut: RenderResult, fieldTestId: string, isD
 }
 
 export const testStatusFieldFails = (sut: RenderResult, fieldTestId: string, errorMessage: string): void => {
-  const passwordStatus = sut.getByTestId(fieldTestId)
-  expect(passwordStatus.title).toBe(errorMessage)
-  expect(passwordStatus.textContent).toBe('✗')
+  const element = sut.getByTestId(fieldTestId)
+  expect(element.getAttribute('data-status')).toBe('invalid')
+  expect(element.title).toBe(errorMessage)
 }
 
 export const testStatusFieldSuccess = (sut: RenderResult, fieldTestId: string): void => {
-  const emailStatus = sut.getByTestId(fieldTestId)
-  expect(emailStatus.title).toBe('Campo preenchido corretamente')
-  expect(emailStatus.textContent).toBe('✓')
+  const element = sut.getByTestId(fieldTestId)
+  expect(element.getAttribute('data-status')).toBe('valid')
 }
 
 export const testElementExist = (sut: RenderResult, fieldTestId: string): void => {
