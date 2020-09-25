@@ -88,7 +88,24 @@ describe('Login', () => {
       .getByTestId('main-error').should('not.exist')
   })
 
-  it('should present error if invalid credentials are provided', () => {
+  it('should present UnexpectedError on 400', () => {
+    cy.route({
+      method: 'POST',
+      url: /login/,
+      status: 400,
+      response: {
+        erro: faker.random.words()
+      }
+    })
+    cy.getByTestId('email').type(faker.internet.email())
+    cy.getByTestId('password').type(faker.internet.password(10, false, '', '@2Aa'))
+    cy.getByTestId('submit').click()
+    cy.getByTestId('spinner').should('not.exist')
+      .getByTestId('main-error').should('contain.text', 'Algum erro ocorreu. Verifique sua conexão e tente novamente.')
+    cy.url().should('eq', `${baseUrl}/login`)
+  })
+
+  it('should presentInvalidCredentialsError on 401', () => {
     cy.route({
       method: 'POST',
       url: /login/,
