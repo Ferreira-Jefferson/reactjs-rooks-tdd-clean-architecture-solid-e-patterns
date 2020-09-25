@@ -131,8 +131,8 @@ describe('Login', () => {
         invalidProperty: faker.random.uuid()
       }
     })
-    cy.getByTestId('email').type('any_email@mail.com')
-    cy.getByTestId('password').type('any_password')
+    cy.getByTestId('email').type(faker.internet.email())
+    cy.getByTestId('password').type(faker.internet.password(10, false, '', '@2Aa'))
     cy.getByTestId('submit').click()
     cy.getByTestId('error-wrap').should('not.have.descendants')
     cy.getByTestId('main-error').should('contain.text', 'Algum erro ocorreu. Verifique sua conexão e tente novamente.')
@@ -147,8 +147,8 @@ describe('Login', () => {
         accessToken: faker.random.uuid()
       }
     })
-    cy.getByTestId('email').type('any_email@mail.com')
-    cy.getByTestId('password').type('any_password')
+    cy.getByTestId('email').type(faker.internet.email())
+    cy.getByTestId('password').type(faker.internet.password(10, false, '', '@2Aa'))
     cy.getByTestId('submit').click()
     cy.getByTestId('error-wrap').should('not.have.descendants')
     cy.url().should('eq', `${baseUrl}/`)
