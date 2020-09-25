@@ -80,10 +80,10 @@ describe('Login', () => {
     cy.getByTestId('error-wrap').should('not.have.descendants')
   })
 
-  it('should present spinner pending the request', () => {
+  it.only('should present spinner pending the request', () => {
     cy.getByTestId('email').type(faker.internet.email())
-    cy.getByTestId('password').type(faker.internet.password(10, false, '', '@2Aa'))
-    cy.getByTestId('submit').click()
+    cy.getByTestId('password')
+      .type(faker.internet.password(10, false, '', '@2Aa')).type('{enter}')
       .getByTestId('spinner').should('exist')
       .getByTestId('main-error').should('not.exist')
   })
