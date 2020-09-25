@@ -80,7 +80,7 @@ describe('Login', () => {
     cy.getByTestId('error-wrap').should('not.have.descendants')
   })
 
-  it.only('should present spinner pending the request', () => {
+  it('should present spinner pending the request', () => {
     cy.getByTestId('email').type(faker.internet.email())
     cy.getByTestId('password')
       .type(faker.internet.password(10, false, '', '@2Aa')).type('{enter}')
@@ -168,5 +168,20 @@ describe('Login', () => {
     cy.getByTestId('password').type(faker.internet.password(10, false, '', '@2Aa'))
     cy.getByTestId('submit').dblclick()
     cy.get('@request.all').should('have.length', 1)
+  })
+
+  it('should not call submit if form is invalid', () => {
+    cy.route({
+      method: 'POST',
+      url: /login/,
+      status: 200,
+      response: {
+        accessToken: faker.random.uuid()
+      }
+    }).as('request')
+    cy.getByTestId('email').type(faker.random.word())
+    cy.getByTestId('password')
+      .type(faker.internet.password(10, false, '', '@2Aa')).type('{enter')
+    cy.get('@request.all').should('have.length', 0)
   })
 })
