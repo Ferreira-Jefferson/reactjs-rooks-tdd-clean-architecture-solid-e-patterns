@@ -4,6 +4,7 @@ const baseUrl: string = Cypress.config().baseUrl
 
 describe('Login', () => {
   beforeEach(() => {
+    cy.server()
     cy.visit('login')
   })
 
@@ -79,28 +80,44 @@ describe('Login', () => {
     cy.getByTestId('error-wrap').should('not.have.descendants')
   })
 
-  it('should present error if invalid credentials are provided', () => {
+  it('should present spinner pending the request', () => {
     cy.getByTestId('email').type(faker.internet.email())
     cy.getByTestId('password').type(faker.internet.password(10, false, '', '@2Aa'))
     cy.getByTestId('submit').click()
-    cy.getByTestId('error-wrap')
       .getByTestId('spinner').should('exist')
       .getByTestId('main-error').should('not.exist')
+  })
 
-      .getByTestId('spinner').should('not.exist')
+  it('should present error if invalid credentials are provided', () => {
+    cy.route({
+      method: 'POST',
+      url: /login/,
+      status: 401,
+      response: {
+        erro: faker.random.words()
+      }
+    })
+    cy.getByTestId('email').type(faker.internet.email())
+    cy.getByTestId('password').type(faker.internet.password(10, false, '', '@2Aa'))
+    cy.getByTestId('submit').click()
+    cy.getByTestId('spinner').should('not.exist')
       .getByTestId('main-error').should('contain.text', 'Credenciais Inválidas')
     cy.url().should('eq', `${baseUrl}/login`)
   })
 
   it('should save accessToken if valid credentials are provided', () => {
+    cy.route({
+      method: 'POST',
+      url: /login/,
+      status: 200,
+      response: {
+        accessToken: faker.random.uuid()
+      }
+    })
     cy.getByTestId('email').type('any_email@mail.com')
     cy.getByTestId('password').type('any_password')
     cy.getByTestId('submit').click()
-    cy.getByTestId('error-wrap')
-      .getByTestId('spinner').should('exist')
-      .getByTestId('main-error').should('not.exist')
-      .getByTestId('spinner').should('not.exist')
-
+    cy.getByTestId('error-wrap').should('not.have.descendants')
     cy.url().should('eq', `${baseUrl}/`)
     cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
   })
