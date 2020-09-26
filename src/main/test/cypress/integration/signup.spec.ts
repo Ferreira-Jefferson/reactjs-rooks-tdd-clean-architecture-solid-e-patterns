@@ -82,4 +82,12 @@ describe('SignUp', () => {
       .getByTestId('main-error').should('contain.text', 'Algum erro ocorreu. Verifique sua conexão e tente novamente.')
     FormHelper.testUrlCalled('/signup')
   })
+
+  it('should save accessToken if valid credentials are provided', () => {
+    FakeResponse.ok(/signup/, 'POST', { accessToken: faker.random.uuid() })
+    fakeSignUp()
+    FormHelper.testNotHasDescendants('error-wrap')
+    FormHelper.testUrlCalled('/')
+    cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
+  })
 })
