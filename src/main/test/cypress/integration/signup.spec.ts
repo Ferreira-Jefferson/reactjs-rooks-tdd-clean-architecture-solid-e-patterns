@@ -1,4 +1,5 @@
 import * as FormHelper from './../support/form-helper'
+import faker from 'faker'
 
 describe('SignUp', () => {
   beforeEach(() => {
@@ -16,5 +17,16 @@ describe('SignUp', () => {
     cy.getByTestId('toLogin')
       .should('contain.text', 'Voltar')
       .should('have.attr', 'href', '/login')
+  })
+
+  it('should present error state if form is invalid', () => {
+    cy.getByTestId('email').type(faker.random.word())
+    FormHelper.testInputStatus('email', 'Email', 'Campo inválido')
+    cy.getByTestId('password').type(faker.random.alphaNumeric(3))
+    FormHelper.testInputStatus('password', 'Senha', 'Campo inválido')
+    cy.getByTestId('passwordConfirmation').type(faker.random.alphaNumeric(3))
+    FormHelper.testInputStatus('passwordConfirmation', 'Confirmar senha', 'Campo inválido')
+    FormHelper.testIsDisabled('submit')
+    FormHelper.testNotHasDescendants('error-wrap')
   })
 })
