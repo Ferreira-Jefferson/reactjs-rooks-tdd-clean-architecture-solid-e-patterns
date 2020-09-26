@@ -35,3 +35,15 @@ export const ok = (url: RegExp, method: string, response: any): void => {
     response
   }).as('request')
 }
+
+export const emailInUseError = (url: RegExp): void => {
+  before()
+  cy.route({
+    method: 'POST',
+    url,
+    status: 403,
+    response: {
+      erro: faker.random.words()
+    }
+  }).as('request')
+}

@@ -1,5 +1,21 @@
 import * as FormHelper from './../support/form-helper'
+import * as FakeResponse from './../support/fake-response'
 import faker from 'faker'
+
+const fakeSignUp = (): void => {
+  cy.getByTestId('name').type(faker.name.findName())
+  FormHelper.testInputStatus('name', 'Nome')
+  cy.getByTestId('email').type(faker.internet.email())
+  FormHelper.testInputStatus('email', 'Email')
+  const password = faker.internet.password(10, false, '', '@2Aa')
+  cy.getByTestId('password').type(password)
+  FormHelper.testInputStatus('password', 'Senha')
+  cy.getByTestId('passwordConfirmation').type(password + ' ')
+  FormHelper.testInputStatus('passwordConfirmation', 'Confirmar senha')
+  cy.getByTestId('submit')
+    .should('not.have.attr', 'disabled')
+  cy.getByTestId('submit').click()
+}
 
 describe('SignUp', () => {
   beforeEach(() => {
@@ -31,17 +47,7 @@ describe('SignUp', () => {
   })
 
   it('should present valid state if form is valid', () => {
-    cy.getByTestId('name').type(faker.name.findName())
-    FormHelper.testInputStatus('name', 'Nome')
-    cy.getByTestId('email').type(faker.internet.email())
-    FormHelper.testInputStatus('email', 'Email')
-    const password = faker.internet.password(10, false, '', '@2Aa')
-    cy.getByTestId('password').type(password)
-    FormHelper.testInputStatus('password', 'Senha')
-    cy.getByTestId('passwordConfirmation').type(password + ' ')
-    FormHelper.testInputStatus('passwordConfirmation', 'Confirmar senha')
-    cy.getByTestId('submit')
-      .should('not.have.attr', 'disabled')
+    fakeSignUp()
     FormHelper.testNotHasDescendants('error-wrap')
   })
 
@@ -53,5 +59,13 @@ describe('SignUp', () => {
     cy.getByTestId('passwordConfirmation').type(password + ' ').type('{enter}')
       .getByTestId('spinner').should('exist')
       .getByTestId('main-error').should('not.exist')
+  })
+
+  it('should present EmailInUseError on 403', () => {
+    FakeResponse.emailInUseError(/signup/)
+    fakeSignUp()
+    cy.getByTestId('spinner').should('not.exist')
+      .getByTestId('main-error').should('contain.text', 'E-mail já cadastrado')
+    FormHelper.testUrlCalled('/signup')
   })
 })
