@@ -13,7 +13,7 @@ export const fakeSignUpSubmit = (sut: RenderResult): AddAccountParams => {
   })
   Object.entries(account).forEach(([field, value]) => {
     Helper.fakerField(sut, field, value)
-    Helper.testStatusFieldSuccess(sut, `${field}-status`)
+    Helper.testStatusFieldSuccess(sut, field)
   })
   const submitButton = sut.getByTestId('submit') as HTMLButtonElement
   fireEvent.click(submitButton)

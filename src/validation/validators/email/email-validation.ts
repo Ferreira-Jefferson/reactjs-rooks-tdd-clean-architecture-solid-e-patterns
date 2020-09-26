@@ -10,6 +10,6 @@ export class EmailValidation implements FieldValidation {
 
   validate (input: Record<string, any>): Error {
     const isValid = this.emailValidator.validate(input[this.field])
-    return isValid ? null : new InvalidFieldError(this.field)
+    return isValid ? null : new InvalidFieldError()
   }
 }

@@ -55,12 +55,12 @@ describe('Login Component', () => {
 
     it('should input email is required', () => {
       const { sut } = makeSut()
-      Helper.testStatusFieldFails(sut, 'email-status', 'Campo obrigatório')
+      Helper.testStatusFieldFails(sut, 'email', 'Campo obrigatório')
     })
 
     it('should input password is required', () => {
       const { sut } = makeSut()
-      Helper.testStatusFieldFails(sut, 'password-status', 'Campo obrigatório')
+      Helper.testStatusFieldFails(sut, 'password', 'Campo obrigatório')
     })
   })
 
@@ -80,7 +80,7 @@ describe('Login Component', () => {
       jest.spyOn(validationStub, 'validate').mockReturnValue(errorMessage)
       for (const field of fields) {
         Helper.fakerField(sut, field)
-        Helper.testStatusFieldFails(sut, `${field}-status`, errorMessage)
+        Helper.testStatusFieldFails(sut, field, errorMessage)
       }
     })
 
@@ -88,7 +88,7 @@ describe('Login Component', () => {
       const { sut } = makeSut()
       for (const field of fields) {
         Helper.fakerField(sut, field)
-        Helper.testStatusFieldSuccess(sut, `${field}-status`)
+        Helper.testStatusFieldSuccess(sut, field)
       }
     })
 
@@ -96,7 +96,7 @@ describe('Login Component', () => {
       const { sut } = makeSut()
       for (const field of fields) {
         Helper.fakerField(sut, field)
-        Helper.testStatusFieldSuccess(sut, `${field}-status`)
+        Helper.testStatusFieldSuccess(sut, field)
       }
       Helper.testButtonIsDisabled(sut, 'submit', false)
     })

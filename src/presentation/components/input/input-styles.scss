@@ -1,31 +1,43 @@
-.inputWrap { 
-  margin-top: 16px;
-  display: flex;
+@import "../../styles/colors.scss";
+
+.inputWrap {
+  margin-top: 25px;
   position: relative;
-  align-items: center;
 
-input {
-  flex-grow: 1;
-}
 
-.status {  
-  position: absolute;
-  right: 8px;
-  font-weight: 700;
-  cursor: help;  
-  display: none;
-}
+  &:focus-within {
+    label {
+      transform: translateY(-20px);
+      opacity: 1; 
+    }
+  }
 
-.statusFail {
-  @extend .status;  
-  display: block;
-  color: rgb(201, 55, 55)
-}
+  input {
+    width: 100%;
+    line-height: 24px;
 
-.statusOk {
-  @extend .status; 
-  display: block;
-  color: rgb(46, 145, 33);
-}
+    &:not(:placeholder-shown) + label {
+      transform: translateY(-20px);
+      opacity: 1;
+    }
 
+    &[data-status="valid"] {
+      border-color: $valid;
+    }
+  
+    &[data-status="invalid"] {
+      border-color: $invalid;
+    }
+  }
+
+  label {
+    text-transform: capitalize;
+    position: absolute;
+    transform-origin: 0%;
+    transform: translateY(0px);
+    transition: transform 300ms ease;
+    color: $primary;
+    opacity: 0;
+    left: 0;
+  }
 }
