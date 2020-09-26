@@ -74,4 +74,12 @@ describe('SignUp', () => {
     fakeSignUp()
     cy.getByTestId('main-error').should('contain.text', 'Algum erro ocorreu. Verifique sua conexão e tente novamente.')
   })
+
+  it('should present UnexpectedError on 400', () => {
+    FakeResponse.unexpectedError(/signup/, 'POST')
+    fakeSignUp()
+    cy.getByTestId('spinner').should('not.exist')
+      .getByTestId('main-error').should('contain.text', 'Algum erro ocorreu. Verifique sua conexão e tente novamente.')
+    FormHelper.testUrlCalled('/signup')
+  })
 })
