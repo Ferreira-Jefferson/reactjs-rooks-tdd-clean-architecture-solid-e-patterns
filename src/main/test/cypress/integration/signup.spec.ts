@@ -44,4 +44,14 @@ describe('SignUp', () => {
       .should('not.have.attr', 'disabled')
     FormHelper.testNotHasDescendants('error-wrap')
   })
+
+  it('should present spinner pending the request', () => {
+    cy.getByTestId('name').type(faker.name.findName())
+    cy.getByTestId('email').type(faker.internet.email())
+    const password = faker.internet.password(10, false, '', '@2Aa')
+    cy.getByTestId('password').type(password)
+    cy.getByTestId('passwordConfirmation').type(password + ' ').type('{enter}')
+      .getByTestId('spinner').should('exist')
+      .getByTestId('main-error').should('not.exist')
+  })
 })
