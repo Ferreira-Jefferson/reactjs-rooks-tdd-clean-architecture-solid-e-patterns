@@ -13,7 +13,7 @@ describe('CompareFieldValidation', () => {
       [field]: faker.random.word(),
       [fieldToCompare]: faker.random.word()
     })
-    expect(error).toEqual(new InvalidFieldError(field))
+    expect(error).toEqual(new InvalidFieldError())
   })
 
   it('should return falsy if compare is valid', () => {

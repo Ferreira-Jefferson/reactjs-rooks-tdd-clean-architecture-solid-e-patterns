@@ -31,7 +31,7 @@ describe('EmailValidation', () => {
     const { sut, emailRegexValidatorStub } = makeSut()
     jest.spyOn(emailRegexValidatorStub, 'validate').mockReturnValue(false)
     const error = sut.validate({ email: faker.random.word() })
-    expect(error).toEqual(new InvalidFieldError('email'))
+    expect(error).toEqual(new InvalidFieldError())
   })
 
   it('should return falsy if email is valid', () => {

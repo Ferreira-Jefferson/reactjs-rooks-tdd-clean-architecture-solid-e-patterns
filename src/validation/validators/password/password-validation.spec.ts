@@ -31,7 +31,7 @@ describe('PasswordValidation', () => {
     const { sut, passwordRegexValidatorStub } = makeSut()
     jest.spyOn(passwordRegexValidatorStub, 'validate').mockReturnValue(false)
     const error = sut.validate({ password: 'invalid_password' })
-    expect(error).toEqual(new InvalidFieldError('password'))
+    expect(error).toEqual(new InvalidFieldError())
   })
 
   it('should return falsy if password is valid', () => {
