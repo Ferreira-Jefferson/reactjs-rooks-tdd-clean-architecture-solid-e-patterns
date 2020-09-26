@@ -2,7 +2,7 @@ import * as FormHelper from './../support/form-helper'
 import * as FakeResponse from './../support/fake-response'
 import faker from 'faker'
 
-const fakeSignUp = (): void => {
+const populateFields = (): void => {
   cy.getByTestId('name').type(faker.name.findName())
   FormHelper.testInputStatus('name', 'Nome')
   cy.getByTestId('email').type(faker.internet.email())
@@ -12,6 +12,10 @@ const fakeSignUp = (): void => {
   FormHelper.testInputStatus('password', 'Senha')
   cy.getByTestId('passwordConfirmation').type(password + ' ')
   FormHelper.testInputStatus('passwordConfirmation', 'Confirmar senha')
+}
+
+const fakeSignUp = (): void => {
+  populateFields()
   cy.getByTestId('submit')
     .should('not.have.attr', 'disabled')
   cy.getByTestId('submit').click()
@@ -89,17 +93,6 @@ describe('SignUp', () => {
     FormHelper.testNotHasDescendants('error-wrap')
     FormHelper.testUrlCalled('/')
     cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
-  })
-
-  it('should prevent multiple submits', () => {
-    FakeResponse.ok(/signup/, 'POST', { accessToken: faker.random.uuid() })
-    cy.getByTestId('name').type(faker.name.findName())
-    cy.getByTestId('email').type(faker.internet.email())
-    const password = faker.internet.password(10, false, '', '@2Aa')
-    cy.getByTestId('password').type(password)
-    cy.getByTestId('passwordConfirmation').type(password + ' ')
-    cy.getByTestId('submit').dblclick()
-    cy.get('@request.all').should('have.length', 1)
   })
 
   it('should not call submit if form is invalid', () => {
