@@ -90,4 +90,15 @@ describe('SignUp', () => {
     FormHelper.testUrlCalled('/')
     cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
   })
+
+  it('should prevent multiple submits', () => {
+    FakeResponse.ok(/signup/, 'POST', { accessToken: faker.random.uuid() })
+    cy.getByTestId('name').type(faker.name.findName())
+    cy.getByTestId('email').type(faker.internet.email())
+    const password = faker.internet.password(10, false, '', '@2Aa')
+    cy.getByTestId('password').type(password)
+    cy.getByTestId('passwordConfirmation').type(password + ' ')
+    cy.getByTestId('submit').dblclick()
+    cy.get('@request.all').should('have.length', 1)
+  })
 })
