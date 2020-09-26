@@ -108,7 +108,7 @@ describe('Login', () => {
   })
 
   it('should not call submit if form is invalid', () => {
-    FakeResponse.ok(/login/, 'POST', { accessToken: faker.random.uuid() })
+    FakeResponse.invalidCredentialsError(/login/)
     cy.getByTestId('email').type(faker.random.word())
     cy.getByTestId('password')
       .type(faker.internet.password(10, false, '', '@2Aa')).type('{enter')
