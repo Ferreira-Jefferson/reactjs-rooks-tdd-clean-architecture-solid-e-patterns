@@ -101,4 +101,13 @@ describe('SignUp', () => {
     cy.getByTestId('submit').dblclick()
     cy.get('@request.all').should('have.length', 1)
   })
+
+  it('should not call submit if form is invalid', () => {
+    FakeResponse.invalidCredentialsError(/signup/)
+    cy.getByTestId('name').type(faker.name.findName())
+    cy.getByTestId('email').type(faker.internet.email())
+    cy.getByTestId('password').type(faker.internet.password())
+    cy.getByTestId('passwordConfirmation').type(faker.internet.password()).type('{enter}')
+    cy.get('@request.all').should('have.length', 0)
+  })
 })
