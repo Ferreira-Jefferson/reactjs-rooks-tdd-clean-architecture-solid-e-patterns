@@ -68,4 +68,10 @@ describe('SignUp', () => {
       .getByTestId('main-error').should('contain.text', 'E-mail já cadastrado')
     FormHelper.testUrlCalled('/signup')
   })
+
+  it('should present UnexpectedError if invalid data is returned', () => {
+    FakeResponse.ok(/signup/, 'POST', { invalidProperty: faker.random.uuid() })
+    fakeSignUp()
+    cy.getByTestId('main-error').should('contain.text', 'Algum erro ocorreu. Verifique sua conexão e tente novamente.')
+  })
 })
