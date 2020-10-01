@@ -1,5 +1,6 @@
 module.exports = {
   roots: ['<rootDir>/src'],
+  coverageDirectory: 'coverage',
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{ts,tsx}',
     '!<rootDir>/src/main/**/*',
@@ -9,7 +10,10 @@ module.exports = {
     '!<rootDir>/src/**/test/**/*',
     '!**/*.d.ts'
   ],
-  coverageDirectory: 'coverage',
+  testPathIgnorePatterns: [
+    '<rootDir>/node_modules/',
+    '<rootDir>/src/main/test/cypress/'
+  ],
   testEnvironment: 'jsdom',
   transform: {
     '.+\\.(ts|tsx)$': 'ts-jest'

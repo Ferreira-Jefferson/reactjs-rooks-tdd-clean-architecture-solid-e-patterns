@@ -10,6 +10,6 @@ export class PasswordValidation implements FieldValidation {
   ) { }
 
   validate (input: Record<string, any>): Error {
-    return this.passwordValidator.validate(input[this.field]) ? null : new InvalidFieldError(this.field)
+    return this.passwordValidator.validate(input[this.field]) ? null : new InvalidFieldError()
   }
 }
